@@ -18,15 +18,21 @@
     <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,600" rel="stylesheet" type="text/css">
 
     <!-- Font Awesome -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-<!-- Bootstrap core CSS -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
-<!-- Material Design Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.4/css/mdb.min.css" rel="stylesheet">
-<script src="https://unpkg.com/ionicons@4.2.4/dist/ionicons.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.4/css/mdb.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/ionicons@4.2.4/dist/ionicons.js"></script>
 
 
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic|Material+Icons">
+    <link rel="stylesheet" href="https://unpkg.com/vue-material@beta/dist/vue-material.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/vue-material@beta/dist/theme/default.css">
 
+
+    <script src="https://unpkg.com/vue"></script>
+    <script src="https://unpkg.com/vue-material@beta"></script>
 
 
     <!-- Styles -->
@@ -36,7 +42,7 @@
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light navbar-laravel">
             <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
+                <a class="navbar-brand" href="{{ url('/') }}" style="color:black;">
                   <h3>  Hotspot </h3>
 
                 </a>
@@ -64,12 +70,33 @@
                                 <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
                             </li>
                         @else
+                            <li class="nav-item"  id="navbarDropdown" class="nav-link" role="button" aria-haspopup="true" aria-expanded="false" style="padding: 15px; ">
+
+                                   <router-link style="color:black;" :to="{ name: 'home' }">Menu<i class="fa fa-home" style="margin-left:8px;"></i></router-link>
+                            </li>
+
+                            <li class="nav-item"  id="navbarDropdown" class="nav-link" role="button" aria-haspopup="true" aria-expanded="false" style="padding: 15px;">
+
+                                   <router-link style="color:black;" :to="{ name: 'orders' }">Orders <i class="fa fa-coffee" style="margin-left:8px;"></i></router-link>
+                            </li>
+
+
+
+                            <li class="nav-item"  id="navbarDropdown" class="nav-link" role="button" aria-haspopup="true" aria-expanded="false" style="padding: 15px;">
+
+                                   <router-link style="color:black;" :to="{ name: 'cart' }">Cart <i class="fa fa-shopping-cart" style="margin-left:8px;"></i></router-link>
+                            </li>
+
+
+
+
                             <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }} <span class="caret"></span>
+
+                                <a id="navbarDropdown" class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 15px;" v-pre>
+                                    {{ Auth::user()->name}} <i class="fa fa-user" aria-hidden="true" style="margin-left:8px;"></i>
                                 </a>
 
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
@@ -81,6 +108,8 @@
                                     </form>
                                 </div>
                             </li>
+
+
                         @endguest
                     </ul>
                 </div>

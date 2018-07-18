@@ -1,8 +1,9 @@
+window.Vue = require('vue');
 require('./bootstrap');
 
-window.Vue = require('vue');
+import VueRouter from 'vue-router';
 
-Vue.component('home-component', require('./components/HomeComponent.vue'));
+
 
 import Router from './routes.js'
 

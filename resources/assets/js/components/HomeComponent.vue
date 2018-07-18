@@ -1,16 +1,60 @@
 <template>
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 <div class="card card-default">
-                    <div class="card-header">Vue Component</div>
+                    <div class="card-header">Menu</div>
 
                     <div class="card-body">
-                        This show that vuejs is running as this is the example component. This is where the single page application will run
+                    <div class="card card-default">
+
+
+                        <div class="card-body">
+                          <h3 style="padding:0px;">Cheese Burger R28</h3>
+                          <p>The cheese is normally added to the cooking hamburger patty shortly before serving, which allows the cheese to melt.</p>
+                          <button style="position: relative; left:80%;"type="submit" class="btn btn-danger">
+                              Add to cart
+                          </button>
+                        </div>
+                    </div>
+                    <div class="card card-default">
+
+
+                        <div class="card-body">
+                          <h3 style="padding:0px;">Monstor R16</h3>
+                          <p>The cheese is normally added to the cooking hamburger patty shortly before serving, which allows the cheese to melt.</p>
+                          <button style="position: relative; left:80%;"type="submit" class="btn btn-danger">
+                              Add to cart
+                          </button>
+                        </div>
+                    </div>
+                    <div class="card card-default">
+
+
+                        <div class="card-body">
+                          <h3 style="padding:0px;">Chicken wrap R25</h3>
+                          <p>The cheese is normally added to the cooking hamburger patty shortly before serving, which allows the cheese to melt.</p>
+                          <button style="position: relative; left:80%;"type="submit" class="btn btn-danger">
+                              Add to cart
+                          </button>
+                        </div>
+                    </div>
+                    <div class="card card-default">
+
+
+                        <div class="card-body">
+                          <h3 style="padding:0px;">Wors Roll R28</h3>
+                          <p>The cheese is normally added to the cooking hamburger patty shortly before serving, which allows the cheese to melt.</p>
+                          <button style="position: relative; left:80%;"type="submit" class="btn btn-danger">
+                              Add to cart
+                          </button>
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
 </template>
 

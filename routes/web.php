@@ -11,10 +11,20 @@
 |
 */
 
-Route::get('/', function () {
-    return view('auth/login');
-});
+Route::get('/', ['middleware' =>'guest', function(){
+  return view('auth.login');
+}]);
+
+
 
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/cart', function () {
+    return view('cart');
+});
+
+Route::get('/orders', function () {
+    return view('orders');
+});
