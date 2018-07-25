@@ -11,15 +11,21 @@
 |
 */
 
-Route::get('/', ['middleware' =>'guest', function(){
+Route::get('/', function(){
+  return view('landpage');
+});
+
+
+Route::get('/login', ['middleware' =>'guest', function(){
   return view('auth.login');
 }]);
 
+Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', 'HomeController@index')->where('any','.*');
 
 Route::get('/cart', function () {
     return view('cart');
