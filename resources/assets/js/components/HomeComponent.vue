@@ -5,51 +5,22 @@
                 <div class="card card-default">
                     <div class="card-header">Menu</div>
 
-                    <div class="card-body">
-                    <div class="card card-default">
+                    <div class="card-body" v-for="(products, index) in filteredProducts">
+                    <div class="card card-default" >
 
 
                         <div class="card-body">
-                          <h3 style="padding:0px;">Cheese Burger R28</h3>
-                          <p>The cheese is normally added to the cooking hamburger patty shortly before serving, which allows the cheese to melt.</p>
-                          <button style="position: relative; left:80%;"type="submit" class="btn btn-danger">
+                          <h2 style="padding:0px;">{{products.name}}   R{{products.price}} </h2>
+
+                          <p>{{products.description}}</p>
+                          <button type="submit" class="btn btn-danger">
                               Add to cart
                           </button>
                         </div>
                     </div>
-                    <div class="card card-default">
 
 
-                        <div class="card-body">
-                          <h3 style="padding:0px;">Monstor R16</h3>
-                          <p>The cheese is normally added to the cooking hamburger patty shortly before serving, which allows the cheese to melt.</p>
-                          <button style="position: relative; left:80%;"type="submit" class="btn btn-danger">
-                              Add to cart
-                          </button>
-                        </div>
-                    </div>
-                    <div class="card card-default">
 
-
-                        <div class="card-body">
-                          <h3 style="padding:0px;">Chicken wrap R25</h3>
-                          <p>The cheese is normally added to the cooking hamburger patty shortly before serving, which allows the cheese to melt.</p>
-                          <button style="position: relative; left:80%;"type="submit" class="btn btn-danger">
-                              Add to cart
-                          </button>
-                        </div>
-                    </div>
-                    <div class="card card-default">
-
-
-                        <div class="card-body">
-                          <h3 style="padding:0px;">Wors Roll R28</h3>
-                          <p>The cheese is normally added to the cooking hamburger patty shortly before serving, which allows the cheese to melt.</p>
-                          <button style="position: relative; left:80%;"type="submit" class="btn btn-danger">
-                              Add to cart
-                          </button>
-                        </div>
-                    </div>
                     </div>
                 </div>
             </div>
@@ -59,9 +30,22 @@
 </template>
 
 <script>
-    export default {
-        mounted() {
-            console.log('Component mounted.')
+export default {
+      data:function() {
+          return {products: ''};
+      },
+      created: function(){
+        let uri = 'http://127.0.0.1:8000/proapi/';
+        Axios.get(uri).then((response) => {
+          this.products = response.data;
+        });
+      },
+      computed: {
+        filteredProducts: function(){
+            return this.products;
         }
-    }
+
+      }
+
+}
 </script>
