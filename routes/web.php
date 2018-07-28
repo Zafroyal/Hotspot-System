@@ -34,3 +34,5 @@ Route::get('/cart', function () {
 Route::get('/orders', function () {
     return view('orders');
 });
+
+Route::resource('/proapi', 'ProductController');
