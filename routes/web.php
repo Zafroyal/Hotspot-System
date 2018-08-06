@@ -36,3 +36,5 @@ Route::get('/orders', function () {
 });
 
 Route::resource('/proapi', 'ProductController');
+
+Route::resource('/cartapi', 'CartController');
