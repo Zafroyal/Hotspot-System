@@ -10,6 +10,7 @@ export const store = new Vuex.Store({
   state: {
     cartdata: [],
     products: [],
+    orders: [],
     total: 0
   },
 
@@ -39,6 +40,14 @@ export const store = new Vuex.Store({
         this.state.products = response.data;
       });
     },
+
+    totCalc: function(state){
+
+    },
+
+    copyArray: function(state){
+      state.orders = state.cartdata.slice();
+    }
 
 
 

@@ -6,7 +6,7 @@
                 <div class="card-header">Menu</div>
 
                 <div class="card-body">
-                <div class="card card-default" >
+                <div class="card card-default" style="min-height: 300px;">
 
                   <table class="table-repsonsive table-bordered">
                     <thead>
@@ -22,7 +22,6 @@
 
                           <td>{{product.name}}   </td>
                           <td>{{product.price}} </td>
-                          <td>1  <button>+</button> <button>-</button></td>
                           <td>
                           <button v-on:click="deleteProduct (product)"  class="">
                               Remove
@@ -39,7 +38,7 @@
 
                     <button style="float: right" type="submit" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal">
 
-                      Checkout ( Total: {{total}} )
+                      Checkout ( Total: R{{total}} )
                     </button>
                 </div>
                 </div>
@@ -62,8 +61,8 @@
            Once an order is placed they will be no refunds so please ensure that your order is satisfying.
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-success" data-dismiss="modal">Accept</button>
-            <button type="button" class="btn btn-danger">Decline</button>
+            <a  href="/orders" class="btn btn-success" data-dismiss="modal" v-on:click="copyArray">Accept</a>
+            <a  class="btn btn-danger" >Decline</a>
           </div>
         </div>
       </div>
@@ -81,7 +80,7 @@
           },
           total: function(){
             let tot = 0;
-        //    this.$store.state.cartdata.forEach(product => tot += this.$store.state.products.price);
+            this.$store.state.cartdata.forEach(product => tot += product.price);
             return tot;
           }
         },
@@ -93,6 +92,9 @@
         methods: {
           deleteProduct(product){
             this.$store.commit('deleteProduct', product.id)
+          },
+          copyArray(){
+            this.$store.commit('copyArray')
           }
         }
 

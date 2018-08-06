@@ -5,30 +5,21 @@
                 <div class="card card-default">
                     <div class="card-header">Orders</div>
 
-                    <div class="card-body">
-                      <div class="card card-default">
+                    <div class="card-body" style="min-height: 300px;">
+                      <div class="card card-default" v-if="total > 0">
 
 
                           <div class="card-body">
-                            <h3 style="padding:0px;">Wors Roll R24</h3>
-                            <p>The wors is normally added to the cooking hamburger patty shortly before serving, which allows the sauce to melt.</p>
+                            <h3 style="padding:0px;">Order R{{total}}</h3>
+                            <p  v-for="(product, index) in products">
+                              {{product.name}}
+                            </p>
                             <div class="alert alert-warning">
-                              <strong>Pending...</strong> Your order is yet to be accepted</a>.
+                              <strong>Order under way!</strong> You will be notified on collection</a>.
                             </div>
                           </div>
                       </div>
-                      <div class="card card-default">
 
-
-                          <div class="card-body">
-                            <h3 style="padding:0px;">Cheese Burger R28</h3>
-                            <p>The cheese is normally added to the cooking hamburger patty shortly before serving, which allows the cheese to melt.</p>
-
-                            <div class="alert alert-success">
-                            <strong>Ready for Collection!</strong> Dont forget to collect within an hour or your order will be removed.
-                            </div>
-                          </div>
-                      </div>
 
                     </div>
                 </div>
@@ -40,8 +31,25 @@
 
 <script>
     export default {
-        mounted() {
-            console.log('Component mounted.')
+      computed: {
+        products(){
+          return this.$store.state.orders;
+        },
+        total: function(){
+          let tot = 0;
+          this.$store.state.orders.forEach(product => tot += product.price);
+          return tot;
         }
+      },
+      data() {
+        return {
+            counter: 0
+        }
+      },
+      methods: {
+        deleteProduct(product){
+          this.$store.commit('deleteProduct', product.id)
+        }
+      }
     }
 </script>

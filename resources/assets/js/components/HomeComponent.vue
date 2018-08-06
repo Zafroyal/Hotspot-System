@@ -2,11 +2,11 @@
     <div class="container">
         <div class="row justify-content-center" >
             <div class="col-md-12">
-                <div class="card card-default">
+                <div class="card card-default" >
                     <div class="card-header">Menu</div>
 
-                    <div class="card-body" v-for="(products, index) in filteredProducts">
-                    <div class="card card-default" >
+                    <div class="card-body"  style="min-height: 300px;">
+                    <div class="card card-default"  v-for="(products, index) in filteredProducts" >
 
 
                         <div class="card-body">
@@ -14,7 +14,6 @@
 
                           <p>{{products.description}}</p>
                           <button type="submit" v-on:click="add (products)" class="btn btn-danger">
-
                               Add to cart
                           </button>
                         </div>
