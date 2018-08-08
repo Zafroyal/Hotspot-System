@@ -38,3 +38,8 @@ Route::get('/orders', function () {
 Route::resource('/proapi', 'ProductController');
 
 Route::resource('/cartapi', 'CartController');
+
+
+Route::group(['prefix' => 'admin'], function () {
+    Voyager::routes();
+});
