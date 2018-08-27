@@ -3,7 +3,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card card-default">
-                <div class="card-header">Menu</div>
+                <div class="card-header">Your cart</div>
 
                 <div class="card-body">
                 <div class="card card-default" style="min-height: 300px;">
@@ -13,17 +13,23 @@
                           <th scope="col">Product</th>
                           <th scope="col">Price</th>
                           <th scope="col">Quantity</th>
-                          <th scope="col"></th>
+                          <th scope="col">Action</th>
 
                         </tr>
                       </thead>
                       <tbody>
                         <tr v-for="(product, index) in products">
 
-                          <td>{{product.name}}   </td>
+                          <td>{{product.name}}</td>
                           <td>{{product.price}} </td>
+                          <td><span style="padding: 5px;"> {{product.quant}}</span>
+                            <div class="btn-group btn-group-sm "  style="float: right;" role="group" aria-label="Basic example">
+                             <button type="button" class="btn-outline-light" v-on:click="addQuant (product)">+</button>
+                             <button type="button" class="btn btn-outline-light" v-on:click="minusQuant (product)">-</button>
+                            </div>
+                          </td>
                           <td>
-                          <button v-on:click="deleteProduct (product)"  class="">
+                          <button v-on:click="deleteProduct (product)"  class="btn btn-dark">
                               Remove
                           </button>
                          </td>
@@ -91,10 +97,23 @@
         },
         methods: {
           deleteProduct(product){
-            this.$store.commit('deleteProduct', product.id)
+            this.$store.commit('deleteProduct',product)
           },
           copyArray(){
             this.$store.commit('copyArray')
+          },
+          addQuant(product){
+            if(product.quant < 3){
+              var pq = product.quant += 1;
+            }
+
+            return pq;
+          },
+          minusQuant(product){
+            if(product.quant >= 2){
+              var pq = product.quant -= 1;
+            }
+            return pq;
           }
         }
 

@@ -6,7 +6,6 @@ Vue.use(Vuex);
 
 export const store = new Vuex.Store({
 
-
   state: {
     cartdata: [],
     products: [],
@@ -18,6 +17,7 @@ export const store = new Vuex.Store({
 
 
   },
+
   mutations: {
 
     addProduct: function(state, product){
@@ -31,6 +31,7 @@ export const store = new Vuex.Store({
 
     deleteProduct: function(state, product){
       state.cartdata.splice(state.cartdata.indexOf(product), 1);
+      console.log(index);
     },
 
 
