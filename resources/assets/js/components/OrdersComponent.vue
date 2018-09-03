@@ -6,16 +6,15 @@
                     <div class="card-header">Orders</div>
 
                     <div class="card-body" style="min-height: 300px;">
-                      <div class="card card-default" v-if="total > 0">
+                      <div class="card card-default" > <!--v-if="total > 0" -->
 
 
-                          <div class="card-body">
-                            <h3 style="padding:0px;">Order R{{total}}</h3>
+                          <div class="card-body" style="min-height: 300px;">
                             <p  v-for="(product, index) in products">
                               {{product.name}}
                             </p>
-                            <div class="alert alert-warning">
-                              <strong>Order under way!</strong> You will be notified on collection</a>.
+                            <div class="alert alert-warning" style="position:absolute; bottom: 0; width: 95%;">
+                              <strong>Currently no order</strong> Feel free to place an order at any time.</a>.
                             </div>
                           </div>
                       </div>
@@ -50,6 +49,15 @@
         deleteProduct(product){
           this.$store.commit('deleteProduct', product.id)
         }
+      },
+
+      mounted(){
+
+        Echo.private('order').listen('OrderEvent', (e) => {
+
+            console.log('mounted');
+            console.log(e);
+        });
       }
     }
 </script>

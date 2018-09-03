@@ -3,7 +3,7 @@
         <div class="row justify-content-center" >
             <div class="col-md-12">
                 <div class="card card-default" >
-                    <div class="card-header">Menu
+                    <div class="card-header"><p> Search Menu: </p>  <input class="col-sm-3" ype="text" v-model="search" placeholder="Type here to search"/>
                       <!-- Use a button to open the snackbar -->
 
 
@@ -14,18 +14,17 @@
                           Categories
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                          <button class="dropdown-item" type="button">All</button>
-                          <button class="dropdown-item" type="button">Specials</button>
-                          <button class="dropdown-item" type="button">Sandwiches</button>
-                          <button class="dropdown-item" type="button">Combos</button>
-                          <button class="dropdown-item" type="button">Tramazzini</button>
-                          <button class="dropdown-item" type="button">Wraps</button>
-                          <button class="dropdown-item" type="button">Burgers & pregos</button>
-                          <button class="dropdown-item" type="button">Pies</button>
-                          <button class="dropdown-item" type="button"> Vegeterian</button>
-                          <button class="dropdown-item" type="button">Salads</button>
-                          <button class="dropdown-item" type="button">Wraps</button>
-                          <button class="dropdown-item" type="button">Beverages</button>
+                          <button class="dropdown-item" type="button" v-on:click="categorySetter(0)">All</button>
+                          <button class="dropdown-item" type="button" v-on:click="categorySetter(1)">Specials</button>
+                          <button class="dropdown-item" type="button" v-on:click="categorySetter(2)">Sandwiches</button>
+                          <button class="dropdown-item" type="button" v-on:click="categorySetter(3)">Combos</button>
+                          <button class="dropdown-item" type="button" v-on:click="categorySetter(4)">Tramazzini</button>
+                          <button class="dropdown-item" type="button" v-on:click="categorySetter(5)">Wraps</button>
+                          <button class="dropdown-item" type="button" v-on:click="categorySetter(6)">Burgers & pregos</button>
+                          <button class="dropdown-item" type="button" v-on:click="categorySetter(7)">Pies</button>
+                          <button class="dropdown-item" type="button" v-on:click="categorySetter(8)"> Vegeterian</button>
+                          <button class="dropdown-item" type="button" v-on:click="categorySetter(9)">Salads</button>
+                          <button class="dropdown-item" type="button" v-on:click="categorySetter(10)">Beverages</button>
                         </div>
                       </div>
 
@@ -33,14 +32,18 @@
                     </div>
 
                     <div class="card-body"  style="min-height: 300px;">
+
+
                     <div class="card card-default"  v-for="(products, index) in filteredProducts" >
 
 
                         <div class="card-body">
                           <h2 style="padding:0px;">{{products.name}}   R{{products.price}}  </h2>
 
-                          <p>{{products.description}}</p>
-                          <button type="submit" v-on:click="add (products), snackbar(), isExist(products)" class="btn btn-danger">
+                          <p><span style="font-weight: bold">Description: </span> {{products.description}}</p>
+
+                          <p><span style="font-weight: bold"> Category: </span> {{products.type}}</p>
+                          <button type="submit" style="float:right;" v-on:click="add (products), snackbar()" class="btn btn-danger">
                               Add to cart
                           </button>
                         </div>
@@ -63,7 +66,12 @@ export default {
       data:function() {
           return {
               inCart: false,
-              tot: 0
+              tot: 0,
+              search:'',
+              category:11,
+              matchedProd: []
+
+
           };
       },
 
@@ -74,16 +82,71 @@ export default {
       computed: {
 
         filteredProducts: function(){
-            return this.$store.state.products;
+
+            return this.$store.state.products.filter((product) => {
+
+
+              if(this.category == 0){
+
+                return product.type.match("");
+              }
+              else if(this.category == 1) {
+                return product.type.match("special");
+              }
+              else if(this.category == 2) {
+                return product.type.match("toasted sandwich");
+              }
+              else if(this.category == 3) {
+                return product.type.match("combo");
+              }
+              else if(this.category == 4) {
+                return product.type.match("tramazzini");
+              }
+              else if(this.category == 5) {
+                return product.type.match("wrap");
+              }
+              else if(this.category == 6) {
+                return product.type.match("burger & prego");
+              }
+              else if(this.category == 7) {
+                return product.type.match("pie");
+              }
+              else if(this.category == 8) {
+
+                return product.type.match("vegeterian");
+              }
+              else if(this.category == 9) {
+                return product.type.match("salad");
+              }
+              else if(this.category == 10) {
+
+                return product.type.match("colddrink");
+
+              }
+              return product.name.match(this.search);
+
+
+
+
+            });
+
+
+
+
         },
+
+
 
         filteredCart: function(){
             return this.cartdata;
         },
 
+
+
         totCart: function(){
           return this.$store.state.cartdata.length;
         },
+
 
         message: function(){
 
@@ -136,6 +199,7 @@ export default {
                 productID: product.id,
                 productName: product.name,
                 productPrice: product.price,
+                productType: product.type,
                 productQuantity: 1,
                 inCart: false
               });
@@ -143,8 +207,47 @@ export default {
 
         },
 
-        isExist: function(product){
+        categorySetter: function(number){
+          return this.$store.state.products.filter((product) => {
+            if(number == 0){
+              this.category = number;
+            }
+            if(number == 1){
+              this.category = number;
+            }
+            if(number == 2){
+              this.category = number;
+            }
+            if(number == 3){
+              this.category = number;
+            }
+            if(number == 3){
+              this.category = number;
+            }
+            if(number == 4){
+              this.category = number;
+            }
+            if(number == 5){
+              this.category = number;
+            }
+            if(number == 6){
+              this.category = number;
+            }
+            if(number == 7){
+              this.category = number;
+            }
+            if(number == 8){
+              this.category = number;
+            }
+            if(number == 9){
+              this.category = number;
+            }
+            if(number == 10){
+              this.category = number;
+            }
 
+
+          });
         },
 
         snackbar: function() {

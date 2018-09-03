@@ -39,7 +39,7 @@
       <div class="container">
         <div class="row">
           <div class="col-xl-9 mx-auto">
-            <h1 class="mb-5">Welcome to Hotspot</h1>
+            <h1 class="mb-5">Welcome to Hotspot-MSA</h1>
             <p>Register Below To Download the Mobile Ordering App!</p>
           </div>
           <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
@@ -49,7 +49,7 @@
                   <input type="email" class="form-control form-control-lg" placeholder="Enter personal your Monash e-mail here!">
                 </div>
                 <div class="col-12 col-md-3">
-                  <a type="submit" href="/register" class="btn btn-block btn-lg btn-primary" style = "background-color:#dc3545;">Sign up!</a>
+                  <button type="submit" class="btn btn-block btn-lg btn-primary" style = "background-color:#dc3545;">Sign up!</button>
                 </div>
               </div>
             </form>
@@ -108,7 +108,7 @@
           <div class="col-lg-6 text-white showcase-img" style="background-image: url('img/bg-showcase-2.jpg');"></div>
           <div class="col-lg-6 my-auto showcase-text">
             <h2>Live Entertainment</h2>
-            <p class="lead mb-0">Bring all your friends and enjoy Live Performances by artists in the Hotspot Cafeteria! </p>
+            <p class="lead mb-0">Bring all your friends and enjoy Live Performances by artists in the Hotspot Cafeteria! Dates and Times to be announced on the App!</p>
           </div>
         </div>
         <div class="row no-gutters">
@@ -137,7 +137,7 @@
                   <input type="email" class="form-control form-control-lg" placeholder="Enter your email...">
                 </div>
                 <div class="col-12 col-md-3">
-
+                  <button type="submit" class="btn btn-block btn-lg btn-primary" style = "background-color:#dc3545;" >Sign up!</button>
                 </div>
               </div>
             </form>

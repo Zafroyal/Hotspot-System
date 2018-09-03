@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import HomeComponent from './components/HomeComponent'
 import CartComponent from './components/CartComponent'
 import OrdersComponent from './components/OrdersComponent'
+import EmployeeComponent from './components/EmployeeComponent'
 
 Vue.use(VueRouter)
 
@@ -25,6 +26,11 @@ const router = new VueRouter(
         path: '/orders',
         name: 'orders',
         component:OrdersComponent
+      },
+      {
+        path: '/employee',
+        name: 'employee',
+        component:EmployeeComponent
       }
     ]
   }

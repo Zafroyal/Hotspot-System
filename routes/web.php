@@ -27,13 +27,13 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->where('any','.*');
 
-Route::get('/cart', function () {
-    return view('cart');
-});
+Route::get('/cart', 'CartController@cart');
 
-Route::get('/orders', function () {
-    return view('orders');
-});
+Route::get('employee', 'EmployeeController@employee');
+
+Route::get('orders','OrdersController@orders');
+
+Route::post('send','EmployeeController@send');
 
 Route::resource('/proapi', 'ProductController');
 
