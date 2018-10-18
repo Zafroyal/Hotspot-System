@@ -93,10 +93,7 @@ export default {
         this.$store.dispatch('load');
         this.$store.dispatch('loadCid');
       },
-      mounted:function(){
-        this.$store.dispatch('load');
-        this.$store.dispatch('loadCid');
-      }
+
 
       computed: {
 
@@ -142,11 +139,6 @@ export default {
                 this.category = 0;
                 return product.name.match(this.search);
               }
-
-
-
-
-
 
 
             });
@@ -232,6 +224,8 @@ export default {
           return this.$store.state.products.filter((product) => {
             if(number == 0){
               this.category = number;
+              this.$store.dispatch('load');
+              this.$store.dispatch('loadCid');
             }
             if(number == 1){
               this.category = number;
@@ -293,6 +287,8 @@ export default {
 
       mounted(){
           console.log(this.$userId);
+          this.$store.dispatch('load');
+          this.$store.dispatch('loadCid');
       }
 
 }
