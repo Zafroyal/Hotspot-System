@@ -93,6 +93,10 @@ export default {
         this.$store.dispatch('load');
         this.$store.dispatch('loadCid');
       },
+      mounted:function(){
+        this.$store.dispatch('load');
+        this.$store.dispatch('loadCid');
+      }
 
       computed: {
 
