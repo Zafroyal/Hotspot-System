@@ -56,7 +56,7 @@
 	<!-- Header -->
 	<header id="home">
 		<!-- Background Image -->
-		<div class="bg-img" style="background-image: url('img/hotback1.JPG');">
+		<div class="bg-img" style="background-image: url('img/hotback.JPG');">
 			<div class="overlay"></div>
 		</div>
 		<!-- /Background Image -->
