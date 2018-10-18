@@ -10,7 +10,8 @@ export const store = new Vuex.Store({
     cartdata: [],
     products: [],
     orders: [],
-    total: 0
+    total: 0,
+    currentuserid: 0
   },
 
   getters: {
@@ -42,6 +43,15 @@ export const store = new Vuex.Store({
       });
     },
 
+    loadCurrentid: function(context){
+      let uri = 'http://localhost:8000/currentuserapi/';
+      Axios.get(uri).then((response) => {
+        this.state.currentuserid = response.data;
+        console.log(this.state.currentuserid);
+        //add loader for all axios and connection points
+      });
+    },
+
     totCalc: function(state){
 
     },
@@ -58,6 +68,9 @@ export const store = new Vuex.Store({
   actions: {
     load(context){
       context.commit('loadProducts');
+    },
+    loadCid(context){
+      context.commit('loadCurrentid');
     }
   }
 

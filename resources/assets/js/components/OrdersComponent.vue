@@ -5,23 +5,58 @@
                 <div class="card card-default">
                     <div class="card-header">Orders</div>
 
+
                     <div class="card-body" style="min-height: 300px;">
-                      <div class="card card-default" > <!--v-if="total > 0" -->
+                      <div class="card card-default" v-if='total > 0'>
+                          <div class="card-body" style="min-height: 100px;">
+                            <h2 style="padding:0px;">Your current Order</h2>
 
 
-                          <div class="card-body" style="min-height: 300px;">
-                            <p  v-for="(product, index) in products">
-                              {{product.name}}
-                            </p>
-                            <div class="alert alert-warning" style="position:absolute; bottom: 0; width: 95%;">
-                              <strong>Currently no order</strong> Feel free to place an order at any time.</a>.
-                            </div>
+                              <p ><strong> Products in order:       <br/> </strong> <span style="" v-for="(product, index) in products" style="padding-right:10px;">
+                                {{product.name}}
+                              </span>
+                              </p>
+
+                              <h3 style="float:right;"  >
+                                 Total: <strong> R {{total}} </strong>
+                              </h3>
+
+
+
+
                           </div>
+
+                      </div>
+
+                      <div class="card card-default" v-if='total == 0'>
+                          <div class="card-body" style="min-height: 200px;">
+                            <h2 style="padding:0px;">No orders have been placed</h2>
+
+
+                              <p  v-for="(product, index) in products">
+                                {{product.name}}
+                              </p>
+
+                              <p>
+                                To place an order go to the menu under the menu navigation, select items you would like to purchase and checkout.
+                              </p>
+
+
+
+
+                          </div>
+
+                      </div>
+
+                      <div class="alert alert-warning" style="position:relative; bottom: 0; width: 100%;">
+                        <strong>Orders will reflect here.</strong> Feel free to place an order at any time.</a>.
+                      </div>
+
                       </div>
 
 
                     </div>
-                </div>
+                </div>.
             </div>
         </div>
 
@@ -38,12 +73,19 @@
           let tot = 0;
           this.$store.state.orders.forEach(product => tot += product.price);
           return tot;
-        }
+        },
+
       },
       data() {
         return {
-            counter: 0
+            counter: 0,
         }
+      },
+
+      created: function(){
+        this.$store.dispatch('load');
+        this.$store.dispatch('loadCid');
+        console.log(this.$store.state.currentuserid);
       },
       methods: {
         deleteProduct(product){
@@ -52,11 +94,13 @@
       },
 
       mounted(){
+        console.log(this.$store.state.currentuserid);
 
-        Echo.private('order').listen('OrderEvent', (e) => {
+        Echo.private('emp').listen('EmpEvent', (e) => {
+              if(e.number.id == this.$store.state.currentuserid )
+                this.$store.state.orders = [];
+              console.log(e.number.id);
 
-            console.log('mounted');
-            console.log(e);
         });
       }
     }

@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function(){
-  return view('landpage');
+  return view('index');
 });
 
 
@@ -25,19 +25,25 @@ Route::get('logout', '\App\Http\Controllers\Auth\LoginController@logout');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->where('any','.*');
+Route::get('/home', 'HomeController@index')->where('any','.*')->middleware('auth');
 
-Route::get('/cart', 'CartController@cart');
+Route::get('/cart', 'CartController@cart')->middleware('auth');
 
-Route::get('employee', 'EmployeeController@employee');
+Route::get('/employee', 'EmployeeController@employee')->middleware('auth');
 
-Route::get('orders','OrdersController@orders');
+Route::get('orders','OrdersController@orders')->middleware('auth');
+
+Route::get('/currentuserapi','OrdersController@index');
 
 Route::post('send','EmployeeController@send');
+
+Route::post('reply','EmployeeController@reply');
 
 Route::resource('/proapi', 'ProductController');
 
 Route::resource('/cartapi', 'CartController');
+
+Route::resource('/collectapi', 'CollectionController');
 
 
 Route::group(['prefix' => 'admin'], function () {

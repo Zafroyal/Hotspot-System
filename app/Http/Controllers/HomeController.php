@@ -21,8 +21,17 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+      if($request->user()->role_id == 2){
         return view('home');
+      }else if($request->user()->role_id == 3){
+        return redirect('/employee');
+      }else if($request->user()->role_id == 1){
+        return redirect('/admin');
+      }else{
+        return redirect('/');
+      }
+
     }
 }

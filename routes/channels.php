@@ -18,3 +18,7 @@ Broadcast::channel('App.User.{id}', function ($user, $id) {
 Broadcast::channel('order', function () {
     return true;
 });
+
+Broadcast::channel('emp', function () {
+    return true;
+});

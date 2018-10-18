@@ -52,6 +52,20 @@
                     </div>
 
 
+                    <div class="card card-default"  v-if="filteredProducts.length == 0" >
+
+
+                        <div class="card-body"  style="min-height: 300px;">
+                          <h2 style="padding:0px;">The product you have searched for does not currently exist</h2>
+
+                          <p>Alter your search to ensure that the product that you have requested is currently avaliable </p>
+
+                          <p><span style="font-weight: bold"> </span> </p>
+
+                        </div>
+                        <!-- The actual snackbar -->
+                        <div id="snackbar">{{message}}</div>
+                    </div>
 
                     </div>
                 </div>
@@ -68,7 +82,7 @@ export default {
               inCart: false,
               tot: 0,
               search:'',
-              category:11,
+              category:0,
               matchedProd: []
 
 
@@ -77,6 +91,7 @@ export default {
 
       created: function(){
         this.$store.dispatch('load');
+        this.$store.dispatch('loadCid');
       },
 
       computed: {
@@ -86,44 +101,46 @@ export default {
             return this.$store.state.products.filter((product) => {
 
 
-              if(this.category == 0){
-
+              if(this.category == 0 && this.search==""){
                 return product.type.match("");
               }
-              else if(this.category == 1) {
+              else if(this.category == 1 && this.search=="" ) {
                 return product.type.match("special");
               }
-              else if(this.category == 2) {
+              else if(this.category == 2 && this.search=="") {
                 return product.type.match("toasted sandwich");
               }
-              else if(this.category == 3) {
+              else if(this.category == 3 && this.search=="") {
                 return product.type.match("combo");
               }
-              else if(this.category == 4) {
+              else if(this.category == 4 && this.search=="") {
                 return product.type.match("tramazzini");
               }
-              else if(this.category == 5) {
+              else if(this.category == 5 && this.search=="") {
                 return product.type.match("wrap");
               }
-              else if(this.category == 6) {
+              else if(this.category == 6 && this.search=="") {
                 return product.type.match("burger & prego");
               }
-              else if(this.category == 7) {
+              else if(this.category == 7 && this.search=="") {
                 return product.type.match("pie");
               }
-              else if(this.category == 8) {
+              else if(this.category == 8 && this.search=="") {
 
                 return product.type.match("vegeterian");
               }
-              else if(this.category == 9) {
+              else if(this.category == 9 && this.search=="") {
                 return product.type.match("salad");
               }
-              else if(this.category == 10) {
-
+              else if(this.category == 10 && this.search=="") {
                 return product.type.match("colddrink");
-
+              } else if (this.search != ""){
+                this.category = 0;
+                return product.name.match(this.search);
               }
-              return product.name.match(this.search);
+
+
+
 
 
 
@@ -151,7 +168,7 @@ export default {
         message: function(){
 
           var message = "";
-          console.log(this.tot);
+
           if(this.tot < 100 && this.inCart == false )
            message = "Item has been added to cart";
           else if(this.inCart == true){
@@ -176,7 +193,7 @@ export default {
             this.tot = 0;
 
             for(var i = 0; i < this.$store.state.cartdata.length; i++){
-              console.log(this.$store.state.cartdata.productQuantity);
+
 
               if( this.$store.state.cartdata[i].id == product.id){
                  this.inCart = true;
@@ -271,7 +288,7 @@ export default {
       },
 
       mounted(){
-
+          console.log(this.$userId);
       }
 
 }
