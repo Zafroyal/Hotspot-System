@@ -151,7 +151,7 @@ return [
          * Package Service Providers...
          */
          TCG\Voyager\VoyagerServiceProvider::class,
-
+         Barryvdh\Cors\ServiceProvider::class,
         /*
          * Application Service Providers...
          */

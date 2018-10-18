@@ -22,6 +22,7 @@ class User extends \TCG\Voyager\Models\User
       return $this->Role;
     }
 
+    
     /**
      * The attributes that should be hidden for arrays.
      *

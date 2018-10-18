@@ -23,8 +23,16 @@ class CartController extends Controller
        $this->middleware('auth');
    }
 
-   public function cart(){
-     return view('cart');
+   public function cart(Request $request){
+     if($request->user()->role_id == 2){
+       return view('cart');
+     }else if($request->user()->role_id == 3){
+       return redirect('/employee');
+     }else if($request->user()->role_id == 1){
+       return redirect('/admin');
+     }else{
+       return redirect('/');
+     }
    }
 
     public function index()

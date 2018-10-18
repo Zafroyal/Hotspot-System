@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Auth;
 use Illuminate\Http\Request;
+use App\User;
 
 class LoginController extends Controller
 {
@@ -27,13 +28,22 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected function authenticated($request, $user){
-      if($user->isRole('admin')){
+    protected function authenticated(Request $request, User $user){
+      if($request->user()->role_id == 3){
+        return redirect('/employee');
+      }
+      else if($request->user()->role_id == 2){
+        return redirect('/home');
+      }
+      else if($request->user()->role_id == 1){
         return redirect('/admin');
       }
       else{
-        redirect('/home');
+        return redirect('/');
       }
+
+
+
     }
 
     protected $redirectTo = '/home';

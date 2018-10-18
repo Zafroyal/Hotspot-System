@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 15);
+/******/ 	return __webpack_require__(__webpack_require__.s = 17);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -71,7 +71,7 @@
 
 
 var bind = __webpack_require__(9);
-var isBuffer = __webpack_require__(24);
+var isBuffer = __webpack_require__(26);
 
 /*global toString:true*/
 
@@ -11473,7 +11473,7 @@ Vue.compile = compileToFunctions;
 
 module.exports = Vue;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(17).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(19).setImmediate))
 
 /***/ }),
 /* 4 */
@@ -11483,7 +11483,7 @@ module.exports = Vue;
 /* WEBPACK VAR INJECTION */(function(process) {
 
 var utils = __webpack_require__(0);
-var normalizeHeaderName = __webpack_require__(26);
+var normalizeHeaderName = __webpack_require__(28);
 
 var DEFAULT_CONTENT_TYPE = {
   'Content-Type': 'application/x-www-form-urlencoded'
@@ -24673,7 +24673,7 @@ return jQuery;
 /* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(23);
+module.exports = __webpack_require__(25);
 
 /***/ }),
 /* 9 */
@@ -24701,12 +24701,12 @@ module.exports = function bind(fn, thisArg) {
 
 
 var utils = __webpack_require__(0);
-var settle = __webpack_require__(27);
-var buildURL = __webpack_require__(29);
-var parseHeaders = __webpack_require__(30);
-var isURLSameOrigin = __webpack_require__(31);
+var settle = __webpack_require__(29);
+var buildURL = __webpack_require__(31);
+var parseHeaders = __webpack_require__(32);
+var isURLSameOrigin = __webpack_require__(33);
 var createError = __webpack_require__(11);
-var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(32);
+var btoa = (typeof window !== 'undefined' && window.btoa && window.btoa.bind(window)) || __webpack_require__(34);
 
 module.exports = function xhrAdapter(config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -24803,7 +24803,7 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(33);
+      var cookies = __webpack_require__(35);
 
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
@@ -24887,7 +24887,7 @@ module.exports = function xhrAdapter(config) {
 "use strict";
 
 
-var enhanceError = __webpack_require__(28);
+var enhanceError = __webpack_require__(30);
 
 /**
  * Create an Error with the specified message, config, error code, request and response.
@@ -27575,26 +27575,336 @@ if (inBrowser && window.Vue) {
 
 /***/ }),
 /* 15 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, exports) {
 
-__webpack_require__(16);
-module.exports = __webpack_require__(67);
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function(useSourceMap) {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
+			if(item[2]) {
+				return "@media " + item[2] + "{" + content + "}";
+			} else {
+				return content;
+			}
+		}).join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap && typeof btoa === 'function') {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
+}
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+	// eslint-disable-next-line no-undef
+	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+	return '/*# ' + data + ' */';
+}
 
 
 /***/ }),
 /* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/*
+  MIT License http://www.opensource.org/licenses/mit-license.php
+  Author Tobias Koppers @sokra
+  Modified by Evan You @yyx990803
+*/
+
+var hasDocument = typeof document !== 'undefined'
+
+if (typeof DEBUG !== 'undefined' && DEBUG) {
+  if (!hasDocument) {
+    throw new Error(
+    'vue-style-loader cannot be used in a non-browser environment. ' +
+    "Use { target: 'node' } in your Webpack config to indicate a server-rendering environment."
+  ) }
+}
+
+var listToStyles = __webpack_require__(55)
+
+/*
+type StyleObject = {
+  id: number;
+  parts: Array<StyleObjectPart>
+}
+
+type StyleObjectPart = {
+  css: string;
+  media: string;
+  sourceMap: ?string
+}
+*/
+
+var stylesInDom = {/*
+  [id: number]: {
+    id: number,
+    refs: number,
+    parts: Array<(obj?: StyleObjectPart) => void>
+  }
+*/}
+
+var head = hasDocument && (document.head || document.getElementsByTagName('head')[0])
+var singletonElement = null
+var singletonCounter = 0
+var isProduction = false
+var noop = function () {}
+var options = null
+var ssrIdKey = 'data-vue-ssr-id'
+
+// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+// tags it will allow on a page
+var isOldIE = typeof navigator !== 'undefined' && /msie [6-9]\b/.test(navigator.userAgent.toLowerCase())
+
+module.exports = function (parentId, list, _isProduction, _options) {
+  isProduction = _isProduction
+
+  options = _options || {}
+
+  var styles = listToStyles(parentId, list)
+  addStylesToDom(styles)
+
+  return function update (newList) {
+    var mayRemove = []
+    for (var i = 0; i < styles.length; i++) {
+      var item = styles[i]
+      var domStyle = stylesInDom[item.id]
+      domStyle.refs--
+      mayRemove.push(domStyle)
+    }
+    if (newList) {
+      styles = listToStyles(parentId, newList)
+      addStylesToDom(styles)
+    } else {
+      styles = []
+    }
+    for (var i = 0; i < mayRemove.length; i++) {
+      var domStyle = mayRemove[i]
+      if (domStyle.refs === 0) {
+        for (var j = 0; j < domStyle.parts.length; j++) {
+          domStyle.parts[j]()
+        }
+        delete stylesInDom[domStyle.id]
+      }
+    }
+  }
+}
+
+function addStylesToDom (styles /* Array<StyleObject> */) {
+  for (var i = 0; i < styles.length; i++) {
+    var item = styles[i]
+    var domStyle = stylesInDom[item.id]
+    if (domStyle) {
+      domStyle.refs++
+      for (var j = 0; j < domStyle.parts.length; j++) {
+        domStyle.parts[j](item.parts[j])
+      }
+      for (; j < item.parts.length; j++) {
+        domStyle.parts.push(addStyle(item.parts[j]))
+      }
+      if (domStyle.parts.length > item.parts.length) {
+        domStyle.parts.length = item.parts.length
+      }
+    } else {
+      var parts = []
+      for (var j = 0; j < item.parts.length; j++) {
+        parts.push(addStyle(item.parts[j]))
+      }
+      stylesInDom[item.id] = { id: item.id, refs: 1, parts: parts }
+    }
+  }
+}
+
+function createStyleElement () {
+  var styleElement = document.createElement('style')
+  styleElement.type = 'text/css'
+  head.appendChild(styleElement)
+  return styleElement
+}
+
+function addStyle (obj /* StyleObjectPart */) {
+  var update, remove
+  var styleElement = document.querySelector('style[' + ssrIdKey + '~="' + obj.id + '"]')
+
+  if (styleElement) {
+    if (isProduction) {
+      // has SSR styles and in production mode.
+      // simply do nothing.
+      return noop
+    } else {
+      // has SSR styles but in dev mode.
+      // for some reason Chrome can't handle source map in server-rendered
+      // style tags - source maps in <style> only works if the style tag is
+      // created and inserted dynamically. So we remove the server rendered
+      // styles and inject new ones.
+      styleElement.parentNode.removeChild(styleElement)
+    }
+  }
+
+  if (isOldIE) {
+    // use singleton mode for IE9.
+    var styleIndex = singletonCounter++
+    styleElement = singletonElement || (singletonElement = createStyleElement())
+    update = applyToSingletonTag.bind(null, styleElement, styleIndex, false)
+    remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true)
+  } else {
+    // use multi-style-tag mode in all other cases
+    styleElement = createStyleElement()
+    update = applyToTag.bind(null, styleElement)
+    remove = function () {
+      styleElement.parentNode.removeChild(styleElement)
+    }
+  }
+
+  update(obj)
+
+  return function updateStyle (newObj /* StyleObjectPart */) {
+    if (newObj) {
+      if (newObj.css === obj.css &&
+          newObj.media === obj.media &&
+          newObj.sourceMap === obj.sourceMap) {
+        return
+      }
+      update(obj = newObj)
+    } else {
+      remove()
+    }
+  }
+}
+
+var replaceText = (function () {
+  var textStore = []
+
+  return function (index, replacement) {
+    textStore[index] = replacement
+    return textStore.filter(Boolean).join('\n')
+  }
+})()
+
+function applyToSingletonTag (styleElement, index, remove, obj) {
+  var css = remove ? '' : obj.css
+
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = replaceText(index, css)
+  } else {
+    var cssNode = document.createTextNode(css)
+    var childNodes = styleElement.childNodes
+    if (childNodes[index]) styleElement.removeChild(childNodes[index])
+    if (childNodes.length) {
+      styleElement.insertBefore(cssNode, childNodes[index])
+    } else {
+      styleElement.appendChild(cssNode)
+    }
+  }
+}
+
+function applyToTag (styleElement, obj) {
+  var css = obj.css
+  var media = obj.media
+  var sourceMap = obj.sourceMap
+
+  if (media) {
+    styleElement.setAttribute('media', media)
+  }
+  if (options.ssrId) {
+    styleElement.setAttribute(ssrIdKey, obj.id)
+  }
+
+  if (sourceMap) {
+    // https://developer.chrome.com/devtools/docs/javascript-debugging
+    // this makes source maps inside style tags work properly in Chrome
+    css += '\n/*# sourceURL=' + sourceMap.sources[0] + ' */'
+    // http://stackoverflow.com/a/26603875
+    css += '\n/*# sourceMappingURL=data:application/json;base64,' + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + ' */'
+  }
+
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = css
+  } else {
+    while (styleElement.firstChild) {
+      styleElement.removeChild(styleElement.firstChild)
+    }
+    styleElement.appendChild(document.createTextNode(css))
+  }
+}
+
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(18);
+module.exports = __webpack_require__(69);
+
+
+/***/ }),
+/* 18 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__store_js__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__store_js__ = __webpack_require__(46);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_router__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__routes_js__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__routes_js__ = __webpack_require__(51);
 window.Vue = __webpack_require__(3);
 
-__webpack_require__(19);
+__webpack_require__(21);
 
-window.VueAxios = __webpack_require__(43).default;
+window.VueAxios = __webpack_require__(45).default;
 
 window.Axios = __webpack_require__(8).default;
 
@@ -27611,7 +27921,7 @@ var app = new Vue({
 });
 
 /***/ }),
-/* 17 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
@@ -27667,7 +27977,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(18);
+__webpack_require__(20);
 // On some exotic environments, it's not clear which object `setimmediate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -27681,7 +27991,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 18 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -27874,15 +28184,15 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(5)))
 
 /***/ }),
-/* 19 */
+/* 21 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_echo__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_echo__ = __webpack_require__(43);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_laravel_echo___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_laravel_echo__);
 
-window._ = __webpack_require__(20);
+window._ = __webpack_require__(22);
 window.Popper = __webpack_require__(6).default;
 
 /**
@@ -27894,7 +28204,7 @@ window.Popper = __webpack_require__(6).default;
 try {
   window.$ = window.jQuery = __webpack_require__(7);
 
-  __webpack_require__(22);
+  __webpack_require__(24);
 } catch (e) {}
 
 /**
@@ -27929,7 +28239,7 @@ if (token) {
 
 
 
-window.Pusher = __webpack_require__(42);
+window.Pusher = __webpack_require__(44);
 
 window.Echo = new __WEBPACK_IMPORTED_MODULE_0_laravel_echo___default.a({
   broadcaster: 'pusher',
@@ -27939,7 +28249,7 @@ window.Echo = new __WEBPACK_IMPORTED_MODULE_0_laravel_echo___default.a({
 });
 
 /***/ }),
-/* 20 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -45049,10 +45359,10 @@ window.Echo = new __WEBPACK_IMPORTED_MODULE_0_laravel_echo___default.a({
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(21)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(23)(module)))
 
 /***/ }),
-/* 21 */
+/* 23 */
 /***/ (function(module, exports) {
 
 module.exports = function(module) {
@@ -45080,7 +45390,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 22 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -49013,7 +49323,7 @@ module.exports = function(module) {
 
 
 /***/ }),
-/* 23 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49021,7 +49331,7 @@ module.exports = function(module) {
 
 var utils = __webpack_require__(0);
 var bind = __webpack_require__(9);
-var Axios = __webpack_require__(25);
+var Axios = __webpack_require__(27);
 var defaults = __webpack_require__(4);
 
 /**
@@ -49056,14 +49366,14 @@ axios.create = function create(instanceConfig) {
 
 // Expose Cancel & CancelToken
 axios.Cancel = __webpack_require__(13);
-axios.CancelToken = __webpack_require__(39);
+axios.CancelToken = __webpack_require__(41);
 axios.isCancel = __webpack_require__(12);
 
 // Expose all/spread
 axios.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = __webpack_require__(40);
+axios.spread = __webpack_require__(42);
 
 module.exports = axios;
 
@@ -49072,7 +49382,7 @@ module.exports.default = axios;
 
 
 /***/ }),
-/* 24 */
+/* 26 */
 /***/ (function(module, exports) {
 
 /*!
@@ -49099,7 +49409,7 @@ function isSlowBuffer (obj) {
 
 
 /***/ }),
-/* 25 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49107,8 +49417,8 @@ function isSlowBuffer (obj) {
 
 var defaults = __webpack_require__(4);
 var utils = __webpack_require__(0);
-var InterceptorManager = __webpack_require__(34);
-var dispatchRequest = __webpack_require__(35);
+var InterceptorManager = __webpack_require__(36);
+var dispatchRequest = __webpack_require__(37);
 
 /**
  * Create a new instance of Axios
@@ -49185,7 +49495,7 @@ module.exports = Axios;
 
 
 /***/ }),
-/* 26 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49204,7 +49514,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 
 
 /***/ }),
-/* 27 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49237,7 +49547,7 @@ module.exports = function settle(resolve, reject, response) {
 
 
 /***/ }),
-/* 28 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49265,7 +49575,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
 
 
 /***/ }),
-/* 29 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49338,7 +49648,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 
 
 /***/ }),
-/* 30 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49398,7 +49708,7 @@ module.exports = function parseHeaders(headers) {
 
 
 /***/ }),
-/* 31 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49473,7 +49783,7 @@ module.exports = (
 
 
 /***/ }),
-/* 32 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49516,7 +49826,7 @@ module.exports = btoa;
 
 
 /***/ }),
-/* 33 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49576,7 +49886,7 @@ module.exports = (
 
 
 /***/ }),
-/* 34 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49635,18 +49945,18 @@ module.exports = InterceptorManager;
 
 
 /***/ }),
-/* 35 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var utils = __webpack_require__(0);
-var transformData = __webpack_require__(36);
+var transformData = __webpack_require__(38);
 var isCancel = __webpack_require__(12);
 var defaults = __webpack_require__(4);
-var isAbsoluteURL = __webpack_require__(37);
-var combineURLs = __webpack_require__(38);
+var isAbsoluteURL = __webpack_require__(39);
+var combineURLs = __webpack_require__(40);
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -49728,7 +50038,7 @@ module.exports = function dispatchRequest(config) {
 
 
 /***/ }),
-/* 36 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49755,7 +50065,7 @@ module.exports = function transformData(data, headers, fns) {
 
 
 /***/ }),
-/* 37 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49776,7 +50086,7 @@ module.exports = function isAbsoluteURL(url) {
 
 
 /***/ }),
-/* 38 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49797,7 +50107,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 
 
 /***/ }),
-/* 39 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49861,7 +50171,7 @@ module.exports = CancelToken;
 
 
 /***/ }),
-/* 40 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -49895,7 +50205,7 @@ module.exports = function spread(callback) {
 
 
 /***/ }),
-/* 41 */
+/* 43 */
 /***/ (function(module, exports) {
 
 var asyncGenerator = function () {
@@ -50833,7 +51143,7 @@ var Echo = function () {
 module.exports = Echo;
 
 /***/ }),
-/* 42 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
@@ -59679,7 +59989,7 @@ return /******/ (function(modules) { // webpackBootstrap
 ;
 
 /***/ }),
-/* 43 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59687,15 +59997,15 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;var _typeof="fun
 				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)):window.Vue&&window.axios&&Vue.use(o,window.axios)}();
 
 /***/ }),
-/* 44 */
+/* 46 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return store; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(45);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuex_persistedstate__ = __webpack_require__(46);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(47);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuex_persistedstate__ = __webpack_require__(48);
 
 
 
@@ -59708,7 +60018,8 @@ var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
     cartdata: [],
     products: [],
     orders: [],
-    total: 0
+    total: 0,
+    currentuserid: 0
   },
 
   getters: {},
@@ -59738,6 +60049,17 @@ var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
       });
     },
 
+    loadCurrentid: function loadCurrentid(context) {
+      var _this2 = this;
+
+      var uri = 'http://localhost:8000/currentuserapi/';
+      Axios.get(uri).then(function (response) {
+        _this2.state.currentuserid = response.data;
+        console.log(_this2.state.currentuserid);
+        //add loader for all axios and connection points
+      });
+    },
+
     totCalc: function totCalc(state) {},
 
     copyArray: function copyArray(state) {
@@ -59749,13 +60071,16 @@ var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
   actions: {
     load: function load(context) {
       context.commit('loadProducts');
+    },
+    loadCid: function loadCid(context) {
+      context.commit('loadCurrentid');
     }
   }
 
 });
 
 /***/ }),
-/* 45 */
+/* 47 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -60700,18 +61025,18 @@ var index_esm = {
 
 
 /***/ }),
-/* 46 */
+/* 48 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_deepmerge__ = __webpack_require__(47);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_shvl__ = __webpack_require__(48);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_deepmerge__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_shvl__ = __webpack_require__(50);
 /* unused harmony default export */ var _unused_webpack_default_export = (function(n,o,u){function i(t,e,r){try{return(r=e.getItem(t))&&void 0!==r?JSON.parse(r):void 0}catch(t){}}if(o=(n=n||{}).storage||window&&window.localStorage,u=n.key||"vuex",!function(t){try{return t.setItem("@@",1),t.removeItem("@@"),!0}catch(t){}return!1}(o))throw new Error("Invalid storage instance given");return function(c){var a=Object(__WEBPACK_IMPORTED_MODULE_1_shvl__["a" /* get */])(n,"getState",i)(u,o);"object"==typeof a&&null!==a&&c.replaceState(Object(__WEBPACK_IMPORTED_MODULE_0_deepmerge__["a" /* default */])(c.state,a,{arrayMerge:n.arrayMerger||function(t,e){return e},clone:!1})),(n.subscriber||function(t){return function(e){return t.subscribe(e)}})(c)(function(t,i){(n.filter||function(){return!0})(t)&&(n.setState||function(t,e,r){return r.setItem(t,JSON.stringify(e))})(u,(n.reducer||function(t,n){return 0===n.length?t:n.reduce(function(n,o){return Object(__WEBPACK_IMPORTED_MODULE_1_shvl__["b" /* set */])(n,o,Object(__WEBPACK_IMPORTED_MODULE_1_shvl__["a" /* get */])(t,o))},{})})(i,n.paths||[]),o)})}});;
 //# sourceMappingURL=vuex-persistedstate.es.js.map
 
 
 /***/ }),
-/* 47 */
+/* 49 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -60807,7 +61132,7 @@ var deepmerge_1 = deepmerge;
 
 
 /***/ }),
-/* 48 */
+/* 50 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -60818,14 +61143,14 @@ function t(t,n,r){return void 0===(t=(n.split?n.split("."):n).reduce(function(t,
 
 
 /***/ }),
-/* 49 */
+/* 51 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_router__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_HomeComponent__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_HomeComponent__ = __webpack_require__(52);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_HomeComponent___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_HomeComponent__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_CartComponent__ = __webpack_require__(58);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_CartComponent___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_CartComponent__);
@@ -60867,13 +61192,13 @@ var router = new __WEBPACK_IMPORTED_MODULE_1_vue_router__["a" /* default */]({
 /* harmony default export */ __webpack_exports__["a"] = (router);
 
 /***/ }),
-/* 50 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(51)
+  __webpack_require__(53)
 }
 var normalizeComponent = __webpack_require__(2)
 /* script */
@@ -60918,17 +61243,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 51 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(52);
+var content = __webpack_require__(54);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(54)("5efc3246", content, false, {});
+var update = __webpack_require__(16)("5efc3246", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -60944,327 +61269,17 @@ if(false) {
 }
 
 /***/ }),
-/* 52 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(53)(false);
+exports = module.exports = __webpack_require__(15)(false);
 // imports
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* The snackbar - position it at the bottom and in the middle of the screen */\n#snackbar {\n    visibility: hidden; /* Hidden by default. Visible on click */\n    min-width: 250px; /* Set a default minimum width */\n    margin-left: -125px; /* Divide value of min-width by 2 */\n    background-color: #333; /* Black background color */\n    color: #fff; /* White text color */\n    text-align: center; /* Centered text */\n    border-radius: 2px; /* Rounded borders */\n    padding: 16px; /* Padding */\n    position: fixed; /* Sit on top of the screen */\n    z-index: 1; /* Add a z-index if needed */\n    left: 50%; /* Center the snackbar */\n    bottom: 30px; /* 30px from the bottom */\n}\n\n/* Show the snackbar when clicking on a button (class added with JavaScript) */\n#snackbar.show {\n    visibility: visible; /* Show the snackbar */\n\n/* Add animation: Take 0.5 seconds to fade in and out the snackbar.\nHowever, delay the fade out process for 2.5 seconds */\n    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;\n    animation: fadein 0.5s, fadeout 0.5s 2.5s;\n}\n\n/* Animations to fade the snackbar in and out */\n@-webkit-keyframes fadein {\nfrom {bottom: 0; opacity: 0;\n}\nto {bottom: 30px; opacity: 1;\n}\n}\n@keyframes fadein {\nfrom {bottom: 0; opacity: 0;\n}\nto {bottom: 30px; opacity: 1;\n}\n}\n@-webkit-keyframes fadeout {\nfrom {bottom: 30px; opacity: 1;\n}\nto {bottom: 0; opacity: 0;\n}\n}\n@keyframes fadeout {\nfrom {bottom: 30px; opacity: 1;\n}\nto {bottom: 0; opacity: 0;\n}\n}\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* The snackbar - position it at the bottom and in the middle of the screen */\n#snackbar {\n    visibility: hidden; /* Hidden by default. Visible on click */\n    min-width: 250px; /* Set a default minimum width */\n    margin-left: -125px; /* Divide value of min-width by 2 */\n    background-color: #333; /* Black background color */\n    color: #fff; /* White text color */\n    text-align: center; /* Centered text */\n    border-radius: 2px; /* Rounded borders */\n    padding: 16px; /* Padding */\n    position: fixed; /* Sit on top of the screen */\n    z-index: 1; /* Add a z-index if needed */\n    left: 50%; /* Center the snackbar */\n    bottom: 30px; /* 30px from the bottom */\n}\n\n/* Show the snackbar when clicking on a button (class added with JavaScript) */\n#snackbar.show {\n    visibility: visible; /* Show the snackbar */\n\n/* Add animation: Take 0.5 seconds to fade in and out the snackbar.\nHowever, delay the fade out process for 2.5 seconds */\n    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;\n    animation: fadein 0.5s, fadeout 0.5s 2.5s;\n}\n\n/* Animations to fade the snackbar in and out */\n@-webkit-keyframes fadein {\nfrom {bottom: 0; opacity: 0;\n}\nto {bottom: 30px; opacity: 1;\n}\n}\n@keyframes fadein {\nfrom {bottom: 0; opacity: 0;\n}\nto {bottom: 30px; opacity: 1;\n}\n}\n@-webkit-keyframes fadeout {\nfrom {bottom: 30px; opacity: 1;\n}\nto {bottom: 0; opacity: 0;\n}\n}\n@keyframes fadeout {\nfrom {bottom: 30px; opacity: 1;\n}\nto {bottom: 0; opacity: 0;\n}\n}\n", ""]);
 
 // exports
-
-
-/***/ }),
-/* 53 */
-/***/ (function(module, exports) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-// css base code, injected by the css-loader
-module.exports = function(useSourceMap) {
-	var list = [];
-
-	// return the list of modules as css string
-	list.toString = function toString() {
-		return this.map(function (item) {
-			var content = cssWithMappingToString(item, useSourceMap);
-			if(item[2]) {
-				return "@media " + item[2] + "{" + content + "}";
-			} else {
-				return content;
-			}
-		}).join("");
-	};
-
-	// import a list of modules into the list
-	list.i = function(modules, mediaQuery) {
-		if(typeof modules === "string")
-			modules = [[null, modules, ""]];
-		var alreadyImportedModules = {};
-		for(var i = 0; i < this.length; i++) {
-			var id = this[i][0];
-			if(typeof id === "number")
-				alreadyImportedModules[id] = true;
-		}
-		for(i = 0; i < modules.length; i++) {
-			var item = modules[i];
-			// skip already imported module
-			// this implementation is not 100% perfect for weird media query combinations
-			//  when a module is imported multiple times with different media queries.
-			//  I hope this will never occur (Hey this way we have smaller bundles)
-			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-				if(mediaQuery && !item[2]) {
-					item[2] = mediaQuery;
-				} else if(mediaQuery) {
-					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-				}
-				list.push(item);
-			}
-		}
-	};
-	return list;
-};
-
-function cssWithMappingToString(item, useSourceMap) {
-	var content = item[1] || '';
-	var cssMapping = item[3];
-	if (!cssMapping) {
-		return content;
-	}
-
-	if (useSourceMap && typeof btoa === 'function') {
-		var sourceMapping = toComment(cssMapping);
-		var sourceURLs = cssMapping.sources.map(function (source) {
-			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
-		});
-
-		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
-	}
-
-	return [content].join('\n');
-}
-
-// Adapted from convert-source-map (MIT)
-function toComment(sourceMap) {
-	// eslint-disable-next-line no-undef
-	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
-	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
-
-	return '/*# ' + data + ' */';
-}
-
-
-/***/ }),
-/* 54 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/*
-  MIT License http://www.opensource.org/licenses/mit-license.php
-  Author Tobias Koppers @sokra
-  Modified by Evan You @yyx990803
-*/
-
-var hasDocument = typeof document !== 'undefined'
-
-if (typeof DEBUG !== 'undefined' && DEBUG) {
-  if (!hasDocument) {
-    throw new Error(
-    'vue-style-loader cannot be used in a non-browser environment. ' +
-    "Use { target: 'node' } in your Webpack config to indicate a server-rendering environment."
-  ) }
-}
-
-var listToStyles = __webpack_require__(55)
-
-/*
-type StyleObject = {
-  id: number;
-  parts: Array<StyleObjectPart>
-}
-
-type StyleObjectPart = {
-  css: string;
-  media: string;
-  sourceMap: ?string
-}
-*/
-
-var stylesInDom = {/*
-  [id: number]: {
-    id: number,
-    refs: number,
-    parts: Array<(obj?: StyleObjectPart) => void>
-  }
-*/}
-
-var head = hasDocument && (document.head || document.getElementsByTagName('head')[0])
-var singletonElement = null
-var singletonCounter = 0
-var isProduction = false
-var noop = function () {}
-var options = null
-var ssrIdKey = 'data-vue-ssr-id'
-
-// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-// tags it will allow on a page
-var isOldIE = typeof navigator !== 'undefined' && /msie [6-9]\b/.test(navigator.userAgent.toLowerCase())
-
-module.exports = function (parentId, list, _isProduction, _options) {
-  isProduction = _isProduction
-
-  options = _options || {}
-
-  var styles = listToStyles(parentId, list)
-  addStylesToDom(styles)
-
-  return function update (newList) {
-    var mayRemove = []
-    for (var i = 0; i < styles.length; i++) {
-      var item = styles[i]
-      var domStyle = stylesInDom[item.id]
-      domStyle.refs--
-      mayRemove.push(domStyle)
-    }
-    if (newList) {
-      styles = listToStyles(parentId, newList)
-      addStylesToDom(styles)
-    } else {
-      styles = []
-    }
-    for (var i = 0; i < mayRemove.length; i++) {
-      var domStyle = mayRemove[i]
-      if (domStyle.refs === 0) {
-        for (var j = 0; j < domStyle.parts.length; j++) {
-          domStyle.parts[j]()
-        }
-        delete stylesInDom[domStyle.id]
-      }
-    }
-  }
-}
-
-function addStylesToDom (styles /* Array<StyleObject> */) {
-  for (var i = 0; i < styles.length; i++) {
-    var item = styles[i]
-    var domStyle = stylesInDom[item.id]
-    if (domStyle) {
-      domStyle.refs++
-      for (var j = 0; j < domStyle.parts.length; j++) {
-        domStyle.parts[j](item.parts[j])
-      }
-      for (; j < item.parts.length; j++) {
-        domStyle.parts.push(addStyle(item.parts[j]))
-      }
-      if (domStyle.parts.length > item.parts.length) {
-        domStyle.parts.length = item.parts.length
-      }
-    } else {
-      var parts = []
-      for (var j = 0; j < item.parts.length; j++) {
-        parts.push(addStyle(item.parts[j]))
-      }
-      stylesInDom[item.id] = { id: item.id, refs: 1, parts: parts }
-    }
-  }
-}
-
-function createStyleElement () {
-  var styleElement = document.createElement('style')
-  styleElement.type = 'text/css'
-  head.appendChild(styleElement)
-  return styleElement
-}
-
-function addStyle (obj /* StyleObjectPart */) {
-  var update, remove
-  var styleElement = document.querySelector('style[' + ssrIdKey + '~="' + obj.id + '"]')
-
-  if (styleElement) {
-    if (isProduction) {
-      // has SSR styles and in production mode.
-      // simply do nothing.
-      return noop
-    } else {
-      // has SSR styles but in dev mode.
-      // for some reason Chrome can't handle source map in server-rendered
-      // style tags - source maps in <style> only works if the style tag is
-      // created and inserted dynamically. So we remove the server rendered
-      // styles and inject new ones.
-      styleElement.parentNode.removeChild(styleElement)
-    }
-  }
-
-  if (isOldIE) {
-    // use singleton mode for IE9.
-    var styleIndex = singletonCounter++
-    styleElement = singletonElement || (singletonElement = createStyleElement())
-    update = applyToSingletonTag.bind(null, styleElement, styleIndex, false)
-    remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true)
-  } else {
-    // use multi-style-tag mode in all other cases
-    styleElement = createStyleElement()
-    update = applyToTag.bind(null, styleElement)
-    remove = function () {
-      styleElement.parentNode.removeChild(styleElement)
-    }
-  }
-
-  update(obj)
-
-  return function updateStyle (newObj /* StyleObjectPart */) {
-    if (newObj) {
-      if (newObj.css === obj.css &&
-          newObj.media === obj.media &&
-          newObj.sourceMap === obj.sourceMap) {
-        return
-      }
-      update(obj = newObj)
-    } else {
-      remove()
-    }
-  }
-}
-
-var replaceText = (function () {
-  var textStore = []
-
-  return function (index, replacement) {
-    textStore[index] = replacement
-    return textStore.filter(Boolean).join('\n')
-  }
-})()
-
-function applyToSingletonTag (styleElement, index, remove, obj) {
-  var css = remove ? '' : obj.css
-
-  if (styleElement.styleSheet) {
-    styleElement.styleSheet.cssText = replaceText(index, css)
-  } else {
-    var cssNode = document.createTextNode(css)
-    var childNodes = styleElement.childNodes
-    if (childNodes[index]) styleElement.removeChild(childNodes[index])
-    if (childNodes.length) {
-      styleElement.insertBefore(cssNode, childNodes[index])
-    } else {
-      styleElement.appendChild(cssNode)
-    }
-  }
-}
-
-function applyToTag (styleElement, obj) {
-  var css = obj.css
-  var media = obj.media
-  var sourceMap = obj.sourceMap
-
-  if (media) {
-    styleElement.setAttribute('media', media)
-  }
-  if (options.ssrId) {
-    styleElement.setAttribute(ssrIdKey, obj.id)
-  }
-
-  if (sourceMap) {
-    // https://developer.chrome.com/devtools/docs/javascript-debugging
-    // this makes source maps inside style tags work properly in Chrome
-    css += '\n/*# sourceURL=' + sourceMap.sources[0] + ' */'
-    // http://stackoverflow.com/a/26603875
-    css += '\n/*# sourceMappingURL=data:application/json;base64,' + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + ' */'
-  }
-
-  if (styleElement.styleSheet) {
-    styleElement.styleSheet.cssText = css
-  } else {
-    while (styleElement.firstChild) {
-      styleElement.removeChild(styleElement.firstChild)
-    }
-    styleElement.appendChild(document.createTextNode(css))
-  }
-}
 
 
 /***/ }),
@@ -61369,6 +61384,20 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -61376,7 +61405,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       inCart: false,
       tot: 0,
       search: '',
-      category: 11,
+      category: 0,
       matchedProd: []
 
     };
@@ -61384,6 +61413,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
   created: function created() {
     this.$store.dispatch('load');
+    this.$store.dispatch('loadCid');
   },
 
   computed: {
@@ -61393,33 +61423,33 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
       return this.$store.state.products.filter(function (product) {
 
-        if (_this.category == 0) {
-
+        if (_this.category == 0 && _this.search == "") {
           return product.type.match("");
-        } else if (_this.category == 1) {
+        } else if (_this.category == 1 && _this.search == "") {
           return product.type.match("special");
-        } else if (_this.category == 2) {
+        } else if (_this.category == 2 && _this.search == "") {
           return product.type.match("toasted sandwich");
-        } else if (_this.category == 3) {
+        } else if (_this.category == 3 && _this.search == "") {
           return product.type.match("combo");
-        } else if (_this.category == 4) {
+        } else if (_this.category == 4 && _this.search == "") {
           return product.type.match("tramazzini");
-        } else if (_this.category == 5) {
+        } else if (_this.category == 5 && _this.search == "") {
           return product.type.match("wrap");
-        } else if (_this.category == 6) {
+        } else if (_this.category == 6 && _this.search == "") {
           return product.type.match("burger & prego");
-        } else if (_this.category == 7) {
+        } else if (_this.category == 7 && _this.search == "") {
           return product.type.match("pie");
-        } else if (_this.category == 8) {
+        } else if (_this.category == 8 && _this.search == "") {
 
           return product.type.match("vegeterian");
-        } else if (_this.category == 9) {
+        } else if (_this.category == 9 && _this.search == "") {
           return product.type.match("salad");
-        } else if (_this.category == 10) {
-
+        } else if (_this.category == 10 && _this.search == "") {
           return product.type.match("colddrink");
+        } else if (_this.search != "") {
+          _this.category = 0;
+          return product.name.match(_this.search);
         }
-        return product.name.match(_this.search);
       });
     },
 
@@ -61434,7 +61464,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     message: function message() {
 
       var message = "";
-      console.log(this.tot);
+
       if (this.tot < 100 && this.inCart == false) message = "Item has been added to cart";else if (this.inCart == true) {
         message = "Item is already in cart";
       } else {
@@ -61453,7 +61483,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.tot = 0;
 
       for (var i = 0; i < this.$store.state.cartdata.length; i++) {
-        console.log(this.$store.state.cartdata.productQuantity);
 
         if (this.$store.state.cartdata[i].id == product.id) {
           this.inCart = true;
@@ -61538,7 +61567,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
   },
 
-  mounted: function mounted() {}
+  mounted: function mounted() {
+    console.log(this.$userId);
+  }
 });
 
 /***/ }),
@@ -61773,64 +61804,100 @@ var render = function() {
               staticClass: "card-body",
               staticStyle: { "min-height": "300px" }
             },
-            _vm._l(_vm.filteredProducts, function(products, index) {
-              return _c("div", { staticClass: "card card-default" }, [
-                _c("div", { staticClass: "card-body" }, [
-                  _c("h2", { staticStyle: { padding: "0px" } }, [
-                    _vm._v(
-                      _vm._s(products.name) +
-                        "   R" +
-                        _vm._s(products.price) +
-                        "  "
+            [
+              _vm._l(_vm.filteredProducts, function(products, index) {
+                return _c("div", { staticClass: "card card-default" }, [
+                  _c("div", { staticClass: "card-body" }, [
+                    _c("h2", { staticStyle: { padding: "0px" } }, [
+                      _vm._v(
+                        _vm._s(products.name) +
+                          "   R" +
+                          _vm._s(products.price) +
+                          "  "
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("p", [
+                      _c("span", { staticStyle: { "font-weight": "bold" } }, [
+                        _vm._v("Description: ")
+                      ]),
+                      _vm._v(" " + _vm._s(products.description))
+                    ]),
+                    _vm._v(" "),
+                    _c("p", [
+                      _c("span", { staticStyle: { "font-weight": "bold" } }, [
+                        _vm._v(" Category: ")
+                      ]),
+                      _vm._v(" " + _vm._s(products.type))
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-danger",
+                        staticStyle: { float: "right" },
+                        attrs: { type: "submit" },
+                        on: {
+                          click: function($event) {
+                            _vm.add(products), _vm.snackbar()
+                          }
+                        }
+                      },
+                      [
+                        _vm._v(
+                          "\n                          Add to cart\n                      "
+                        )
+                      ]
                     )
                   ]),
                   _vm._v(" "),
-                  _c("p", [
-                    _c("span", { staticStyle: { "font-weight": "bold" } }, [
-                      _vm._v("Description: ")
-                    ]),
-                    _vm._v(" " + _vm._s(products.description))
-                  ]),
-                  _vm._v(" "),
-                  _c("p", [
-                    _c("span", { staticStyle: { "font-weight": "bold" } }, [
-                      _vm._v(" Category: ")
-                    ]),
-                    _vm._v(" " + _vm._s(products.type))
-                  ]),
-                  _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-danger",
-                      staticStyle: { float: "right" },
-                      attrs: { type: "submit" },
-                      on: {
-                        click: function($event) {
-                          _vm.add(products), _vm.snackbar()
-                        }
-                      }
-                    },
-                    [
-                      _vm._v(
-                        "\n                          Add to cart\n                      "
-                      )
-                    ]
-                  )
-                ]),
-                _vm._v(" "),
-                _c("div", { attrs: { id: "snackbar" } }, [
-                  _vm._v(_vm._s(_vm.message))
+                  _c("div", { attrs: { id: "snackbar" } }, [
+                    _vm._v(_vm._s(_vm.message))
+                  ])
                 ])
-              ])
-            })
+              }),
+              _vm._v(" "),
+              _vm.filteredProducts.length == 0
+                ? _c("div", { staticClass: "card card-default" }, [
+                    _vm._m(0),
+                    _vm._v(" "),
+                    _c("div", { attrs: { id: "snackbar" } }, [
+                      _vm._v(_vm._s(_vm.message))
+                    ])
+                  ])
+                : _vm._e()
+            ],
+            2
           )
         ])
       ])
     ])
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      { staticClass: "card-body", staticStyle: { "min-height": "300px" } },
+      [
+        _c("h2", { staticStyle: { padding: "0px" } }, [
+          _vm._v("The product you have searched for does not currently exist")
+        ]),
+        _vm._v(" "),
+        _c("p", [
+          _vm._v(
+            "Alter your search to ensure that the product that you have requested is currently avaliable "
+          )
+        ]),
+        _vm._v(" "),
+        _c("p", [_c("span", { staticStyle: { "font-weight": "bold" } })])
+      ]
+    )
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -61973,6 +62040,90 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -61987,6 +62138,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       return this.$store.state.cartdata;
     },
 
+
     total: function total() {
       var _this = this;
 
@@ -61997,12 +62149,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     fullcart: function fullcart() {
       if (this.tot > 100) {
-        return 'Cart full! Make sure total is less than R100';
+        return 'Cart full, Total over R100';
       } else {
         return '';
       }
+    },
+    orderArray: function orderArray() {
+      return this.$store.state.orders;
     }
-
   },
 
   methods: {
@@ -62021,6 +62175,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
       return pq;
     },
+    clearCart: function clearCart() {
+      this.$store.state.cartdata = [];
+      this.tot = 0;
+    },
     minusQuant: function minusQuant(product) {
       this.tot = 0;
       if (product.quant >= 2) {
@@ -62029,13 +62187,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       return pq;
     },
     send: function send() {
-      axios.post('/send', {
-        orders: this.$store.state.cartdata
-      }).then(function (response) {
-        console.log(response);
-      }).catch(function (error) {
-        console.log(error);
-      });
+      if (this.tot <= 100) {
+        axios.post('/send', {
+          orders: this.$store.state.cartdata
+        }).then(function (response) {
+          console.log(response);
+        }).catch(function (error) {
+          console.log(error.response);
+        });
+      }
     }
   }
 
@@ -62063,119 +62223,191 @@ var render = function() {
                 staticStyle: { "min-height": "300px" }
               },
               [
-                _c(
-                  "table",
-                  {
-                    staticClass: "table-repsonsive table-bordered table-striped"
-                  },
-                  [
-                    _vm._m(0),
-                    _vm._v(" "),
-                    _c(
-                      "tbody",
-                      _vm._l(_vm.products, function(product, index) {
-                        return _c("tr", [
-                          _c("td", [_vm._v(_vm._s(product.name))]),
-                          _vm._v(" "),
-                          _c("td", [_vm._v(_vm._s(product.price) + " ")]),
-                          _vm._v(" "),
-                          _c("td", [
-                            _c("span", { staticStyle: { padding: "5px" } }, [
-                              _vm._v(" " + _vm._s(product.quant))
-                            ]),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              {
-                                staticClass: "btn-group btn-group-sm ",
-                                staticStyle: { float: "right" },
-                                attrs: {
-                                  role: "group",
-                                  "aria-label": "Basic example"
-                                }
-                              },
-                              [
+                _vm.total == 0
+                  ? _c(
+                      "div",
+                      {
+                        staticClass: "card-body",
+                        staticStyle: { "min-height": "200px" }
+                      },
+                      [
+                        _c("h2", { staticStyle: { padding: "0px" } }, [
+                          _vm._v("No items in cart")
+                        ]),
+                        _vm._v(" "),
+                        _c("p", [
+                          _vm._v(
+                            "\r\n                            To place add items to cart go to the menu and select items you would like to purchase.\r\n                          "
+                          )
+                        ])
+                      ]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.total > 0
+                  ? _c(
+                      "table",
+                      { staticClass: "table-repsonsive table-bordered " },
+                      [
+                        _vm._m(0),
+                        _vm._v(" "),
+                        _c(
+                          "tbody",
+                          _vm._l(_vm.products, function(product, index) {
+                            return _c("tr", [
+                              _c("td", [_vm._v(_vm._s(product.name))]),
+                              _vm._v(" "),
+                              _c("td", [_vm._v(_vm._s(product.price) + " ")]),
+                              _vm._v(" "),
+                              _c("td", [
                                 _c(
-                                  "button",
-                                  {
-                                    staticClass: "btn-outline-dark",
-                                    attrs: { type: "button" },
-                                    on: {
-                                      click: function($event) {
-                                        _vm.addQuant(product)
-                                      }
-                                    }
-                                  },
-                                  [_vm._v("+")]
+                                  "span",
+                                  { staticStyle: { padding: "5px" } },
+                                  [_vm._v(" " + _vm._s(product.quant))]
                                 ),
                                 _vm._v(" "),
                                 _c(
+                                  "div",
+                                  {
+                                    staticClass: "btn-group btn-group-sm ",
+                                    staticStyle: { float: "right" },
+                                    attrs: {
+                                      role: "group",
+                                      "aria-label": "Basic example"
+                                    }
+                                  },
+                                  [
+                                    _vm.total <= 100
+                                      ? _c(
+                                          "button",
+                                          {
+                                            staticClass: "btn-outline-dark",
+                                            attrs: { type: "button" },
+                                            on: {
+                                              click: function($event) {
+                                                _vm.addQuant(product)
+                                              }
+                                            }
+                                          },
+                                          [_vm._v("+")]
+                                        )
+                                      : _vm._e(),
+                                    _vm._v(" "),
+                                    _vm.total > 100
+                                      ? _c(
+                                          "button",
+                                          {
+                                            staticClass: "btn-outline-light",
+                                            attrs: {
+                                              type: "button",
+                                              disabled: ""
+                                            },
+                                            on: {
+                                              click: function($event) {
+                                                _vm.addQuant(product)
+                                              }
+                                            }
+                                          },
+                                          [_vm._v("+")]
+                                        )
+                                      : _vm._e(),
+                                    _vm._v(" "),
+                                    _c(
+                                      "button",
+                                      {
+                                        staticClass: "btn btn-outline-dark",
+                                        attrs: { type: "button" },
+                                        on: {
+                                          click: function($event) {
+                                            _vm.minusQuant(product)
+                                          }
+                                        }
+                                      },
+                                      [_vm._v("-")]
+                                    )
+                                  ]
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _c(
                                   "button",
                                   {
-                                    staticClass: "btn btn-outline-dark",
-                                    attrs: { type: "button" },
+                                    staticClass: "btn btn-dark ",
+                                    staticStyle: { float: "right" },
                                     on: {
                                       click: function($event) {
-                                        _vm.minusQuant(product)
+                                        _vm.deleteProduct(product)
                                       }
                                     }
                                   },
-                                  [_vm._v("-")]
+                                  [
+                                    _vm._v(
+                                      "\r\n                              Remove\r\n                          "
+                                    )
+                                  ]
                                 )
-                              ]
-                            )
-                          ]),
-                          _vm._v(" "),
-                          _c("td", [
-                            _c(
-                              "button",
-                              {
-                                staticClass: "btn btn-dark",
-                                staticStyle: { float: "right" },
-                                on: {
-                                  click: function($event) {
-                                    _vm.deleteProduct(product)
-                                  }
-                                }
-                              },
-                              [
-                                _vm._v(
-                                  "\r\n                              Remove\r\n                          "
-                                )
-                              ]
-                            )
-                          ])
-                        ])
-                      })
+                              ])
+                            ])
+                          })
+                        )
+                      ]
                     )
-                  ]
-                ),
+                  : _vm._e(),
                 _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-danger",
-                    staticStyle: {
-                      width: "100%",
-                      position: "absolute",
-                      bottom: "0"
-                    },
-                    attrs: {
-                      type: "submit",
-                      "data-toggle": "modal",
-                      "data-target": "#exampleModal"
-                    }
-                  },
-                  [
-                    _vm._v(
-                      "\r\n\r\n                      Checkout ( Total: R" +
-                        _vm._s(_vm.total) +
-                        " ) " +
-                        _vm._s(_vm.fullcart) +
-                        "\r\n                    "
+                _vm.total < 100
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-danger",
+                        staticStyle: {
+                          width: "100%",
+                          position: "relative",
+                          bottom: "0"
+                        },
+                        attrs: {
+                          type: "submit",
+                          "data-toggle": "modal",
+                          "data-target": "#exampleModal"
+                        }
+                      },
+                      [
+                        _vm._v(
+                          "\r\n                      Checkout ( Total: R" +
+                            _vm._s(_vm.total) +
+                            " ) " +
+                            _vm._s(_vm.fullcart) +
+                            "\r\n                    "
+                        )
+                      ]
                     )
-                  ]
-                )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.total > 100
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-danger",
+                        staticStyle: {
+                          width: "100%",
+                          position: "relative",
+                          bottom: "0"
+                        },
+                        attrs: {
+                          type: "submit",
+                          "data-toggle": "modal",
+                          "data-target": "#cartfull"
+                        }
+                      },
+                      [
+                        _vm._v(
+                          "\r\n                       " +
+                            _vm._s(_vm.fullcart) +
+                            "\r\n                    "
+                        )
+                      ]
+                    )
+                  : _vm._e()
               ]
             )
           ])
@@ -62183,12 +62415,87 @@ var render = function() {
       ])
     ]),
     _vm._v(" "),
+    _vm.orderArray.length == 0 && _vm.total > 0
+      ? _c(
+          "div",
+          {
+            staticClass: "modal fade",
+            attrs: {
+              id: "exampleModal",
+              tabindex: "-1",
+              role: "dialog",
+              "aria-labelledby": "exampleModalLabel",
+              "aria-hidden": "true"
+            }
+          },
+          [
+            _c(
+              "div",
+              { staticClass: "modal-dialog", attrs: { role: "document" } },
+              [
+                _c("div", { staticClass: "modal-content" }, [
+                  _vm._m(1),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "modal-body" }, [
+                    _vm._v(
+                      "\r\n           Once an order is placed they will be no refunds so please ensure that your order is satisfying.\r\n          "
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "modal-footer" }, [
+                    _c(
+                      "a",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: { href: "/orders", "data-dismiss": "modal" },
+                        on: {
+                          click: function($event) {
+                            _vm.copyArray(), _vm.send(), _vm.clearCart()
+                          }
+                        }
+                      },
+                      [_vm._v("Accept")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "a",
+                      {
+                        staticClass: "btn btn-danger",
+                        attrs: { "data-dismiss": "modal" }
+                      },
+                      [_vm._v("Decline")]
+                    )
+                  ])
+                ])
+              ]
+            )
+          ]
+        )
+      : _vm._e(),
+    _vm._v(" "),
+    _vm.orderArray.length > 0 && _vm.total > 0
+      ? _c(
+          "div",
+          {
+            staticClass: "modal fade",
+            attrs: {
+              id: "exampleModal",
+              tabindex: "-1",
+              role: "dialog",
+              "aria-labelledby": "exampleModalLabel",
+              "aria-hidden": "true"
+            }
+          },
+          [_vm._m(2)]
+        )
+      : _vm._e(),
+    _vm._v(" "),
     _c(
       "div",
       {
         staticClass: "modal fade",
         attrs: {
-          id: "exampleModal",
+          id: "cartfull",
           tabindex: "-1",
           role: "dialog",
           "aria-labelledby": "exampleModalLabel",
@@ -62201,36 +62508,39 @@ var render = function() {
           { staticClass: "modal-dialog", attrs: { role: "document" } },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(1),
+              _vm._m(3),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
                 _vm._v(
-                  "\r\n           Once an order is placed they will be no refunds so please ensure that your order is satisfying.\r\n          "
+                  "\r\n           Your current total in the cart is R" +
+                    _vm._s(_vm.total) +
+                    ". Make sure that this total is less than R100\r\n          "
                 )
               ]),
               _vm._v(" "),
-              _c("div", { staticClass: "modal-footer" }, [
-                _c(
-                  "a",
-                  {
-                    staticClass: "btn btn-success",
-                    attrs: { href: "/orders", "data-dismiss": "modal" },
-                    on: {
-                      click: function($event) {
-                        _vm.copyArray(), _vm.send()
-                      }
-                    }
-                  },
-                  [_vm._v("Accept")]
-                ),
-                _vm._v(" "),
-                _c("a", { staticClass: "btn btn-danger" }, [_vm._v("Decline")])
-              ])
+              _vm._m(4)
             ])
           ]
         )
       ]
-    )
+    ),
+    _vm._v(" "),
+    _vm.total == 0
+      ? _c(
+          "div",
+          {
+            staticClass: "modal fade",
+            attrs: {
+              id: "exampleModal",
+              tabindex: "-1",
+              role: "dialog",
+              "aria-labelledby": "exampleModalLabel",
+              "aria-hidden": "true"
+            }
+          },
+          [_vm._m(5)]
+        )
+      : _vm._e()
   ])
 }
 var staticRenderFns = [
@@ -62272,6 +62582,149 @@ var staticRenderFns = [
         [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
       )
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      { staticClass: "modal-dialog", attrs: { role: "document" } },
+      [
+        _c("div", { staticClass: "modal-content" }, [
+          _c("div", { staticClass: "modal-header" }, [
+            _c(
+              "h5",
+              {
+                staticClass: "modal-title",
+                attrs: { id: "exampleModalLabel" }
+              },
+              [_vm._v("Your order is currently being processed")]
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "close",
+                attrs: {
+                  type: "button",
+                  "data-dismiss": "modal",
+                  "aria-label": "Close"
+                }
+              },
+              [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "modal-body" }, [
+            _vm._v(
+              "\r\n           Once the order is complete you will then be able to place other order.\r\n          "
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "modal-footer" }, [
+            _c(
+              "a",
+              {
+                staticClass: "btn btn-danger",
+                attrs: { "data-dismiss": "modal" }
+              },
+              [_vm._v("Dismiss")]
+            )
+          ])
+        ])
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c(
+        "h5",
+        { staticClass: "modal-title", attrs: { id: "exampleModalLabel" } },
+        [_vm._v("Your cart is currently over the price limit")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-footer" }, [
+      _c(
+        "a",
+        { staticClass: "btn btn-danger", attrs: { "data-dismiss": "modal" } },
+        [_vm._v("Dismiss")]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      { staticClass: "modal-dialog", attrs: { role: "document" } },
+      [
+        _c("div", { staticClass: "modal-content" }, [
+          _c("div", { staticClass: "modal-header" }, [
+            _c(
+              "h5",
+              {
+                staticClass: "modal-title",
+                attrs: { id: "exampleModalLabel" }
+              },
+              [_vm._v("Cart is empty")]
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "close",
+                attrs: {
+                  type: "button",
+                  "data-dismiss": "modal",
+                  "aria-label": "Close"
+                }
+              },
+              [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "modal-body" }, [
+            _vm._v(
+              "\r\n           There are no items in the cart. Make sure you select items in cart before checking out.\r\n          "
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "modal-footer" }, [
+            _c(
+              "a",
+              {
+                staticClass: "btn btn-danger",
+                attrs: { "data-dismiss": "modal" }
+              },
+              [_vm._v("Dismiss")]
+            )
+          ])
+        ])
+      ]
+    )
   }
 ]
 render._withStripped = true
@@ -62366,6 +62819,41 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   computed: {
@@ -62380,6 +62868,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       });
       return tot;
     }
+
   },
   data: function data() {
     return {
@@ -62387,6 +62876,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     };
   },
 
+
+  created: function created() {
+    this.$store.dispatch('load');
+    this.$store.dispatch('loadCid');
+    console.log(this.$store.state.currentuserid);
+  },
   methods: {
     deleteProduct: function deleteProduct(product) {
       this.$store.commit('deleteProduct', product.id);
@@ -62394,11 +62889,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   },
 
   mounted: function mounted() {
+    var _this = this;
 
-    Echo.private('order').listen('OrderEvent', function (e) {
+    console.log(this.$store.state.currentuserid);
 
-      console.log('mounted');
-      console.log(e);
+    Echo.private('emp').listen('EmpEvent', function (e) {
+      if (e.number.id == _this.$store.state.currentuserid) _this.$store.state.orders = [];
+      console.log(e.number.id);
     });
   }
 });
@@ -62424,33 +62921,95 @@ var render = function() {
               staticStyle: { "min-height": "300px" }
             },
             [
-              _c("div", { staticClass: "card card-default" }, [
-                _c(
-                  "div",
-                  {
-                    staticClass: "card-body",
-                    staticStyle: { "min-height": "300px" }
-                  },
-                  [
-                    _vm._l(_vm.products, function(product, index) {
-                      return _c("p", [
-                        _vm._v(
-                          "\n                          " +
-                            _vm._s(product.name) +
-                            "\n                        "
-                        )
-                      ])
-                    }),
-                    _vm._v(" "),
-                    _vm._m(0)
-                  ],
-                  2
-                )
-              ])
+              _vm.total > 0
+                ? _c("div", { staticClass: "card card-default" }, [
+                    _c(
+                      "div",
+                      {
+                        staticClass: "card-body",
+                        staticStyle: { "min-height": "100px" }
+                      },
+                      [
+                        _c("h2", { staticStyle: { padding: "0px" } }, [
+                          _vm._v("Your current Order")
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "p",
+                          [
+                            _vm._m(0),
+                            _vm._v(" "),
+                            _vm._l(_vm.products, function(product, index) {
+                              return _c(
+                                "span",
+                                {
+                                  staticStyle: { "padding-right": "10px" },
+                                  attrs: { style: "padding-right:10px;" }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                            " +
+                                      _vm._s(product.name) +
+                                      "\n                          "
+                                  )
+                                ]
+                              )
+                            })
+                          ],
+                          2
+                        ),
+                        _vm._v(" "),
+                        _c("h3", { staticStyle: { float: "right" } }, [
+                          _vm._v("\n                             Total: "),
+                          _c("strong", [
+                            _vm._v(" R " + _vm._s(_vm.total) + " ")
+                          ])
+                        ])
+                      ]
+                    )
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.total == 0
+                ? _c("div", { staticClass: "card card-default" }, [
+                    _c(
+                      "div",
+                      {
+                        staticClass: "card-body",
+                        staticStyle: { "min-height": "200px" }
+                      },
+                      [
+                        _c("h2", { staticStyle: { padding: "0px" } }, [
+                          _vm._v("No orders have been placed")
+                        ]),
+                        _vm._v(" "),
+                        _vm._l(_vm.products, function(product, index) {
+                          return _c("p", [
+                            _vm._v(
+                              "\n                            " +
+                                _vm._s(product.name) +
+                                "\n                          "
+                            )
+                          ])
+                        }),
+                        _vm._v(" "),
+                        _c("p", [
+                          _vm._v(
+                            "\n                            To place an order go to the menu under the menu navigation, select items you would like to purchase and checkout.\n                          "
+                          )
+                        ])
+                      ],
+                      2
+                    )
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _vm._m(1)
             ]
           )
         ])
-      ])
+      ]),
+      _vm._v(".\n        ")
     ])
   ])
 }
@@ -62459,16 +63018,22 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
+    return _c("strong", [_vm._v(" Products in order:       "), _c("br")])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
     return _c(
       "div",
       {
         staticClass: "alert alert-warning",
-        staticStyle: { position: "absolute", bottom: "0", width: "95%" }
+        staticStyle: { position: "relative", bottom: "0", width: "100%" }
       },
       [
-        _c("strong", [_vm._v("Currently no order")]),
+        _c("strong", [_vm._v("Orders will reflect here.")]),
         _vm._v(" Feel free to place an order at any time."),
-        _vm._v(".\n                        ")
+        _vm._v(".\n                  ")
       ]
     )
   }
@@ -62487,15 +63052,19 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(65)
+}
 var normalizeComponent = __webpack_require__(2)
 /* script */
-var __vue_script__ = __webpack_require__(65)
+var __vue_script__ = __webpack_require__(67)
 /* template */
-var __vue_template__ = __webpack_require__(66)
+var __vue_template__ = __webpack_require__(68)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
-var __vue_styles__ = null
+var __vue_styles__ = injectStyle
 /* scopeId */
 var __vue_scopeId__ = null
 /* moduleIdentifier (server only) */
@@ -62531,10 +63100,77 @@ module.exports = Component.exports
 
 /***/ }),
 /* 65 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(66);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(16)("2912e437", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-52779408\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./EmployeeComponent.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-52779408\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./EmployeeComponent.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 66 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(15)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* The snackbar - position it at the bottom and in the middle of the screen */\n#snackbar {\n    visibility: hidden; /* Hidden by default. Visible on click */\n    min-width: 250px; /* Set a default minimum width */\n    margin-left: -125px; /* Divide value of min-width by 2 */\n    background-color: #333; /* Black background color */\n    color: #fff; /* White text color */\n    text-align: center; /* Centered text */\n    border-radius: 2px; /* Rounded borders */\n    padding: 16px; /* Padding */\n    position: fixed; /* Sit on top of the screen */\n    z-index: 1; /* Add a z-index if needed */\n    left: 50%; /* Center the snackbar */\n    bottom: 30px; /* 30px from the bottom */\n}\n\n/* Show the snackbar when clicking on a button (class added with JavaScript) */\n#snackbar.show {\n    visibility: visible; /* Show the snackbar */\n\n/* Add animation: Take 0.5 seconds to fade in and out the snackbar.\nHowever, delay the fade out process for 2.5 seconds */\n    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;\n    animation: fadein 0.5s, fadeout 0.5s 2.5s;\n}\n\n/* Animations to fade the snackbar in and out */\n@-webkit-keyframes fadein {\nfrom {bottom: 0; opacity: 0;\n}\nto {bottom: 30px; opacity: 1;\n}\n}\n@keyframes fadein {\nfrom {bottom: 0; opacity: 0;\n}\nto {bottom: 30px; opacity: 1;\n}\n}\n@-webkit-keyframes fadeout {\nfrom {bottom: 30px; opacity: 1;\n}\nto {bottom: 0; opacity: 0;\n}\n}\n@keyframes fadeout {\nfrom {bottom: 30px; opacity: 1;\n}\nto {bottom: 0; opacity: 0;\n}\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 67 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -62580,37 +63216,99 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     orders: function orders() {
       return this.Orders;
     },
+    products: function products() {
+      return this.Products;
+    },
     username: function username() {
       return this.user;
     },
     number: function number() {
-      return Math.floor(Math.random() * (25 - 1 + 1)) + 1;
+      this.orderNum = Math.floor(Math.random() * (25 - 1 + 1)) + 1;
+      return this.orderNum;
+    },
+    messager: function messager() {
+      return this.message;
     }
   },
   data: function data() {
     return {
       Orders: [],
-      user: ""
+      Products: [],
+      user: "",
+      orderNum: 0,
+      message: ""
     };
   },
 
   methods: {
-    send: function send() {}
+    /*  complete(){
+       axios.post('/send', {
+         complete: true
+       }).then(response => {
+         console.log(response);
+       }).catch(error => {
+         console.log(error);
+       });
+     }, */
+    deleteO: function deleteO(order) {
+      this.Orders.splice(this.Orders.indexOf(order), 1);
+      this.message = "Order declined";
+    },
+    completed: function completed(order) {
+      this.Orders.splice(this.Orders.indexOf(order), 1);
+      this.message = "Order completed";
+      axios.post('/collectapi', { user: order.user.name, email: order.user.email, number: this.orderNum }).then(function (response) {
+        return console.log(response);
+      }).catch(function (error) {
+        return console.log(error.response);
+      });
+    },
+    reply: function reply(order) {
+      axios.post('/reply', {
+        usernames: order.user
+      }).then(function (response) {
+
+        console.log(response);
+      }).catch(function (error) {
+        console.log(error.response);
+      });
+    },
+
+
+    snackbar: function snackbar() {
+      // Get the snackbar DIV
+      var x = document.getElementById("snackbar");
+
+      // Add the "show" class to DIV
+      x.className = "show";
+
+      // After 3 seconds, remove the show class from DIV
+      setTimeout(function () {
+        x.className = x.className.replace("show", "");
+      }, 1500);
+    }
+
   },
 
   mounted: function mounted() {
     var _this = this;
 
     Echo.private('order').listen('OrderEvent', function (e) {
-      _this.orders.push(e.order[0]);
-      _this.user = e.user.name;
-      console.log(e.order[0]);
+      _this.Orders.push(e); //call the particulars of this object in the template v-for
+
+      console.log(e);
+
+      _this.Products = e.order;
+
+      console.log(e.user.email);
+
+      _this.orderNum = Math.floor(Math.random() * (25 - 1 + 1)) + 1;
     });
   }
 });
 
 /***/ }),
-/* 66 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -62631,54 +63329,91 @@ var render = function() {
               staticClass: "card-body",
               staticStyle: { "min-height": "300px" }
             },
-            _vm._l(_vm.orders, function(order, index) {
-              return _c("div", { staticClass: "card card-default" }, [
-                _c("div", { staticClass: "card-body" }, [
-                  _c("h2", { staticStyle: { padding: "0px" } }, [
-                    _vm._v("Order: " + _vm._s(_vm.number) + " ")
-                  ]),
-                  _vm._v(" "),
-                  _c("p", [
-                    _c("span", { staticStyle: { "font-weight": "bold" } }, [
-                      _vm._v("User: ")
+            [
+              _vm._l(_vm.orders, function(order, index) {
+                return _c("div", { staticClass: "card card-default" }, [
+                  _c("div", { staticClass: "card-body" }, [
+                    _c("h2", { staticStyle: { padding: "0px" } }, [
+                      _vm._v("Order: " + _vm._s(index + 1) + " ")
                     ]),
-                    _vm._v(" " + _vm._s(_vm.username))
-                  ]),
-                  _vm._v(" "),
-                  _vm._m(0, true),
-                  _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-danger",
-                      staticStyle: { float: "right" },
-                      attrs: { type: "submit" },
-                      on: { click: function($event) {} }
-                    },
-                    [
-                      _vm._v(
-                        "\n                              Decline\n                          "
-                      )
-                    ]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-primary",
-                      staticStyle: { float: "right" },
-                      attrs: { type: "submit" },
-                      on: { click: function($event) {} }
-                    },
-                    [
-                      _vm._v(
-                        "\n                              Accept\n                          "
-                      )
-                    ]
-                  )
+                    _vm._v(" "),
+                    _c("p", { staticStyle: { padding: "0px" } }, [
+                      _c("strong", [_vm._v(" User: ")]),
+                      _vm._v(" " + _vm._s(order.user.name) + " ")
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "table",
+                      { staticClass: "table-repsonsive table-bordered " },
+                      [
+                        _vm._m(0, true),
+                        _vm._v(" "),
+                        _vm._l(order.order, function(product) {
+                          return _c("tbody", [
+                            _c("td", [_vm._v(_vm._s(product.name))]),
+                            _vm._v(" "),
+                            _c("td", [_vm._v("R" + _vm._s(product.price))]),
+                            _vm._v(" "),
+                            _c("td", [_vm._v(_vm._s(product.quant))])
+                          ])
+                        })
+                      ],
+                      2
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-danger",
+                        staticStyle: { float: "right" },
+                        attrs: { type: "submit" },
+                        on: {
+                          click: function($event) {
+                            _vm.deleteO(order), _vm.reply(order), _vm.snackbar()
+                          }
+                        }
+                      },
+                      [
+                        _vm._v(
+                          "\n                              Decline\n                          "
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        staticStyle: { float: "right" },
+                        attrs: { type: "submit" },
+                        on: {
+                          click: [
+                            function($event) {},
+                            function($event) {
+                              _vm.completed(order),
+                                _vm.reply(order),
+                                _vm.snackbar()
+                            }
+                          ]
+                        }
+                      },
+                      [
+                        _vm._v(
+                          "\n                              Complete\n                          "
+                        )
+                      ]
+                    )
+                  ])
                 ])
-              ])
-            })
+              }),
+              _vm._v(" "),
+              _c("div", { attrs: { id: "snackbar" } }, [
+                _vm._v(_vm._s(_vm.messager))
+              ]),
+              _vm._v(" "),
+              _vm._m(1)
+            ],
+            2
           )
         ])
       ])
@@ -62690,13 +63425,30 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("p", [
-      _c("span", { staticStyle: { "font-weight": "bold" } }, [
-        _vm._v(" Products: ")
-      ]),
+    return _c("thead", [
+      _c("th", { attrs: { scope: "col" } }, [_vm._v("Product")]),
       _vm._v(" "),
-      _c("span", [_vm._v(" placeholder ")])
+      _c("th", { attrs: { scope: "col" } }, [_vm._v("Price")]),
+      _vm._v(" "),
+      _c("th", { attrs: { scope: "col" } }, [_vm._v("Quantity")])
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "alert alert-danger",
+        staticStyle: { position: "relative", bottom: "0", width: "95%" }
+      },
+      [
+        _c("strong", [_vm._v("Orders Incoming")]),
+        _vm._v(" Be sure to accept or decline user orders as they come in"),
+        _vm._v(".\n                                                      ")
+      ]
+    )
   }
 ]
 render._withStripped = true
@@ -62709,7 +63461,7 @@ if (false) {
 }
 
 /***/ }),
-/* 67 */
+/* 69 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
