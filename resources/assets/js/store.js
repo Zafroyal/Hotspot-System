@@ -40,6 +40,9 @@ export const store = new Vuex.Store({
       let uri = 'http://104.248.250.174/proapi/';
       Axios.get(uri).then((response) => {
         this.state.products = response.data;
+      }).catch(error => {
+        console.log(error.response);
+
       });
     },
 
@@ -49,6 +52,9 @@ export const store = new Vuex.Store({
         this.state.currentuserid = response.data;
         console.log(this.state.currentuserid);
         //add loader for all axios and connection points
+      }).catch(error => {
+        console.log(error.response);
+
       });
     },
 
