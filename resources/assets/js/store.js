@@ -37,14 +37,14 @@ export const store = new Vuex.Store({
 
 
     loadProducts: function(context){
-      let uri = 'http://localhost:8000/proapi/';
+      let uri = 'http://104.248.250.174/proapi/';
       Axios.get(uri).then((response) => {
         this.state.products = response.data;
       });
     },
 
     loadCurrentid: function(context){
-      let uri = 'http://localhost:8000/currentuserapi/';
+      let uri = 'http://104.248.250.174/currentuserapi/';
       Axios.get(uri).then((response) => {
         this.state.currentuserid = response.data;
         console.log(this.state.currentuserid);
