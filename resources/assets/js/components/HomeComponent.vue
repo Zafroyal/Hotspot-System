@@ -224,8 +224,6 @@ export default {
           return this.$store.state.products.filter((product) => {
             if(number == 0){
               this.category = number;
-              this.$store.dispatch('load');
-              this.$store.dispatch('loadCid');
             }
             if(number == 1){
               this.category = number;
