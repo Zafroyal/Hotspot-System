@@ -62,8 +62,11 @@
 
                     </table>
 
-                    <button  style="width: 100%; position:relative; bottom:0" type="submit" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal" v-if='total < 100'>
+                    <button  style="width: 100%; position:relative; bottom:0" type="submit" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal" v-if='total < 100 && (currentid == 8 || currentid == 7)'>
                       Checkout ( Total: R{{total}} ) {{fullcart}}
+                    </button>
+                    <button  style="width: 100%; position:relative; bottom:0" type="submit" class="btn btn-danger"  v-if='currentid != 7 || currentid != 8'>
+                      Order privileges inactive {{currentid}}
                     </button>
                     <button  style="width: 100%; position:relative; bottom:0" type="submit" class="btn btn-danger" data-toggle="modal" data-target="#cartfull" v-if='total > 100'>
                        {{fullcart}}
@@ -167,7 +170,8 @@
       data() {
         return {
             counter: 0,
-            tot: 0
+            tot: 0,
+            currid: 0,
         }
       },
         computed: {
@@ -188,6 +192,10 @@
           },
           orderArray(){
             return this.$store.state.orders;
+          },
+
+          currentid(){
+            return this.$store.state.currentuserid;
           }
 
         },

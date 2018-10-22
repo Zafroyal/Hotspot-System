@@ -60043,20 +60043,24 @@ var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
     loadProducts: function loadProducts(context) {
       var _this = this;
 
-      var uri = 'http://localhost:8000/proapi/';
+      var uri = 'http://104.248.250.174/proapi/';
       Axios.get(uri).then(function (response) {
         _this.state.products = response.data;
+      }).catch(function (error) {
+        console.log(error.response);
       });
     },
 
     loadCurrentid: function loadCurrentid(context) {
       var _this2 = this;
 
-      var uri = 'http://localhost:8000/currentuserapi/';
+      var uri = 'http://104.248.250.174/currentuserapi/';
       Axios.get(uri).then(function (response) {
         _this2.state.currentuserid = response.data;
         console.log(_this2.state.currentuserid);
         //add loader for all axios and connection points
+      }).catch(function (error) {
+        console.log(error.response);
       });
     },
 
@@ -61277,7 +61281,7 @@ exports = module.exports = __webpack_require__(15)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* The snackbar - position it at the bottom and in the middle of the screen */\n#snackbar {\n    visibility: hidden; /* Hidden by default. Visible on click */\n    min-width: 250px; /* Set a default minimum width */\n    margin-left: -125px; /* Divide value of min-width by 2 */\n    background-color: #333; /* Black background color */\n    color: #fff; /* White text color */\n    text-align: center; /* Centered text */\n    border-radius: 2px; /* Rounded borders */\n    padding: 16px; /* Padding */\n    position: fixed; /* Sit on top of the screen */\n    z-index: 1; /* Add a z-index if needed */\n    left: 50%; /* Center the snackbar */\n    bottom: 30px; /* 30px from the bottom */\n}\n\n/* Show the snackbar when clicking on a button (class added with JavaScript) */\n#snackbar.show {\n    visibility: visible; /* Show the snackbar */\n\n/* Add animation: Take 0.5 seconds to fade in and out the snackbar.\nHowever, delay the fade out process for 2.5 seconds */\n    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;\n    animation: fadein 0.5s, fadeout 0.5s 2.5s;\n}\n\n/* Animations to fade the snackbar in and out */\n@-webkit-keyframes fadein {\nfrom {bottom: 0; opacity: 0;\n}\nto {bottom: 30px; opacity: 1;\n}\n}\n@keyframes fadein {\nfrom {bottom: 0; opacity: 0;\n}\nto {bottom: 30px; opacity: 1;\n}\n}\n@-webkit-keyframes fadeout {\nfrom {bottom: 30px; opacity: 1;\n}\nto {bottom: 0; opacity: 0;\n}\n}\n@keyframes fadeout {\nfrom {bottom: 30px; opacity: 1;\n}\nto {bottom: 0; opacity: 0;\n}\n}\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* The snackbar - position it at the bottom and in the middle of the screen */\n#snackbar {\n    visibility: hidden; /* Hidden by default. Visible on click */\n    min-width: 250px; /* Set a default minimum width */\n    margin-left: -125px; /* Divide value of min-width by 2 */\n    background-color: #333; /* Black background color */\n    color: #fff; /* White text color */\n    text-align: center; /* Centered text */\n    border-radius: 2px; /* Rounded borders */\n    padding: 16px; /* Padding */\n    position: fixed; /* Sit on top of the screen */\n    z-index: 1; /* Add a z-index if needed */\n    left: 50%; /* Center the snackbar */\n    bottom: 30px; /* 30px from the bottom */\n}\n\n/* Show the snackbar when clicking on a button (class added with JavaScript) */\n#snackbar.show {\n    visibility: visible; /* Show the snackbar */\n\n/* Add animation: Take 0.5 seconds to fade in and out the snackbar.\nHowever, delay the fade out process for 2.5 seconds */\n    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;\n    animation: fadein 0.5s, fadeout 0.5s 2.5s;\n}\n\n/* Animations to fade the snackbar in and out */\n@-webkit-keyframes fadein {\nfrom {bottom: 0; opacity: 0;\n}\nto {bottom: 30px; opacity: 1;\n}\n}\n@keyframes fadein {\nfrom {bottom: 0; opacity: 0;\n}\nto {bottom: 30px; opacity: 1;\n}\n}\n@-webkit-keyframes fadeout {\nfrom {bottom: 30px; opacity: 1;\n}\nto {bottom: 0; opacity: 0;\n}\n}\n@keyframes fadeout {\nfrom {bottom: 30px; opacity: 1;\n}\nto {bottom: 0; opacity: 0;\n}\n}\n", ""]);
 
 // exports
 
@@ -61569,6 +61573,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
   mounted: function mounted() {
     console.log(this.$userId);
+    this.$store.dispatch('load');
+    this.$store.dispatch('loadCid');
   }
 });
 
@@ -62124,12 +62130,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       counter: 0,
-      tot: 0
+      tot: 0,
+      currid: 0
     };
   },
 
@@ -62156,6 +62166,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     orderArray: function orderArray() {
       return this.$store.state.orders;
+    },
+    currentid: function currentid() {
+      return this.$store.state.currentuserid;
     }
   },
 
@@ -62355,7 +62368,7 @@ var render = function() {
                     )
                   : _vm._e(),
                 _vm._v(" "),
-                _vm.total < 100
+                _vm.total < 100 && (_vm.currentid == 8 || _vm.currentid == 7)
                   ? _c(
                       "button",
                       {
@@ -62377,6 +62390,28 @@ var render = function() {
                             _vm._s(_vm.total) +
                             " ) " +
                             _vm._s(_vm.fullcart) +
+                            "\r\n                    "
+                        )
+                      ]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.currentid != 7 || _vm.currentid != 8
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-danger",
+                        staticStyle: {
+                          width: "100%",
+                          position: "relative",
+                          bottom: "0"
+                        },
+                        attrs: { type: "submit" }
+                      },
+                      [
+                        _vm._v(
+                          "\r\n                      Order privileges inactive " +
+                            _vm._s(_vm.currentid) +
                             "\r\n                    "
                         )
                       ]
