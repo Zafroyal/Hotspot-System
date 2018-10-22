@@ -62396,7 +62396,7 @@ var render = function() {
                     )
                   : _vm._e(),
                 _vm._v(" "),
-                _vm.currentid != 7 || _vm.currentid != 8
+                _vm.currentid != 7 && _vm.currentid != 8
                   ? _c(
                       "button",
                       {
@@ -62410,9 +62410,7 @@ var render = function() {
                       },
                       [
                         _vm._v(
-                          "\r\n                      Order privileges inactive " +
-                            _vm._s(_vm.currentid) +
-                            "\r\n                    "
+                          "\r\n                      Order privileges inactive \r\n                    "
                         )
                       ]
                     )
