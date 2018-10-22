@@ -60043,7 +60043,7 @@ var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
     loadProducts: function loadProducts(context) {
       var _this = this;
 
-      var uri = 'http://104.248.250.174/proapi/';
+      var uri = 'http://204.48.30.114/proapi/';
       Axios.get(uri).then(function (response) {
         _this.state.products = response.data;
       }).catch(function (error) {
@@ -60054,7 +60054,7 @@ var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
     loadCurrentid: function loadCurrentid(context) {
       var _this2 = this;
 
-      var uri = 'http://104.248.250.174/currentuserapi/';
+      var uri = 'http://204.48.30.114/currentuserapi/';
       Axios.get(uri).then(function (response) {
         _this2.state.currentuserid = response.data;
         console.log(_this2.state.currentuserid);
