@@ -62,12 +62,10 @@
 
                     </table>
 
-                    <button  style="width: 100%; position:relative; bottom:0" type="submit" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal" v-if='total < 100 && (currentid == 8 || currentid == 7)'>
+                    <button  style="width: 100%; position:relative; bottom:0" type="submit" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal" v-if='total < 100 '>
                       Checkout ( Total: R{{total}} ) {{fullcart}}
                     </button>
-                    <button  style="width: 100%; position:relative; bottom:0" type="submit" class="btn btn-danger"  v-if='currentid != 7 && currentid != 8'>
-                      Order privileges inactive 
-                    </button>
+                  
                     <button  style="width: 100%; position:relative; bottom:0" type="submit" class="btn btn-danger" data-toggle="modal" data-target="#cartfull" v-if='total > 100'>
                        {{fullcart}}
                     </button>
