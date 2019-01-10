@@ -24948,9 +24948,9 @@ module.exports = Cancel;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/**
-  * vue-router v3.0.1
-  * (c) 2017 Evan You
+/*!
+  * vue-router v3.0.2
+  * (c) 2018 Evan You
   * @license MIT
   */
 /*  */
@@ -24971,8 +24971,15 @@ function isError (err) {
   return Object.prototype.toString.call(err).indexOf('Error') > -1
 }
 
+function extend (a, b) {
+  for (var key in b) {
+    a[key] = b[key];
+  }
+  return a
+}
+
 var View = {
-  name: 'router-view',
+  name: 'RouterView',
   functional: true,
   props: {
     name: {
@@ -24986,6 +24993,7 @@ var View = {
     var parent = ref.parent;
     var data = ref.data;
 
+    // used by devtools to display a router-view badge
     data.routerView = true;
 
     // directly use parent context's createElement() function
@@ -25060,7 +25068,7 @@ var View = {
 
     return h(component, data, children)
   }
-};
+}
 
 function resolveProps (route, config) {
   switch (typeof config) {
@@ -25081,13 +25089,6 @@ function resolveProps (route, config) {
         );
       }
   }
-}
-
-function extend (to, from) {
-  for (var key in from) {
-    to[key] = from[key];
-  }
-  return to
 }
 
 /*  */
@@ -25187,7 +25188,6 @@ function stringifyQuery (obj) {
 }
 
 /*  */
-
 
 var trailingSlashRE = /\/?$/;
 
@@ -25331,7 +25331,7 @@ var toTypes = [String, Object];
 var eventTypes = [String, Array];
 
 var Link = {
-  name: 'router-link',
+  name: 'RouterLink',
   props: {
     to: {
       type: toTypes,
@@ -25366,17 +25366,17 @@ var Link = {
     var globalExactActiveClass = router.options.linkExactActiveClass;
     // Support global empty active class
     var activeClassFallback = globalActiveClass == null
-            ? 'router-link-active'
-            : globalActiveClass;
+      ? 'router-link-active'
+      : globalActiveClass;
     var exactActiveClassFallback = globalExactActiveClass == null
-            ? 'router-link-exact-active'
-            : globalExactActiveClass;
+      ? 'router-link-exact-active'
+      : globalExactActiveClass;
     var activeClass = this.activeClass == null
-            ? activeClassFallback
-            : this.activeClass;
+      ? activeClassFallback
+      : this.activeClass;
     var exactActiveClass = this.exactActiveClass == null
-            ? exactActiveClassFallback
-            : this.exactActiveClass;
+      ? exactActiveClassFallback
+      : this.exactActiveClass;
     var compareTarget = location.path
       ? createRoute(null, location, null, router)
       : route;
@@ -25416,7 +25416,6 @@ var Link = {
       if (a) {
         // in case the <a> is a static node
         a.isStatic = false;
-        var extend = _Vue.util.extend;
         var aData = a.data = extend({}, a.data);
         aData.on = on;
         var aAttrs = a.data.attrs = extend({}, a.data.attrs);
@@ -25429,7 +25428,7 @@ var Link = {
 
     return h(this.tag, data, this.$slots.default)
   }
-};
+}
 
 function guardEvent (e) {
   // don't redirect with control keys
@@ -25507,8 +25506,8 @@ function install (Vue) {
     get: function get () { return this._routerRoot._route }
   });
 
-  Vue.component('router-view', View);
-  Vue.component('router-link', Link);
+  Vue.component('RouterView', View);
+  Vue.component('RouterLink', Link);
 
   var strats = Vue.config.optionMergeStrategies;
   // use the same hook merging strategy for route hooks
@@ -26018,7 +26017,6 @@ function pathToRegexp (path, keys, options) {
 
   return stringToRegexp(/** @type {string} */ (path), /** @type {!Array} */ (keys), options)
 }
-
 pathToRegexp_1.parse = parse_1;
 pathToRegexp_1.compile = compile_1;
 pathToRegexp_1.tokensToFunction = tokensToFunction_1;
@@ -26214,7 +26212,6 @@ function normalizePath (path, parent, strict) {
 
 /*  */
 
-
 function normalizeLocation (
   raw,
   current,
@@ -26229,9 +26226,9 @@ function normalizeLocation (
 
   // relative params
   if (!next.path && next.params && current) {
-    next = assign({}, next);
+    next = extend({}, next);
     next._normalized = true;
-    var params = assign(assign({}, current.params), next.params);
+    var params = extend(extend({}, current.params), next.params);
     if (current.name) {
       next.name = current.name;
       next.params = params;
@@ -26269,14 +26266,8 @@ function normalizeLocation (
   }
 }
 
-function assign (a, b) {
-  for (var key in b) {
-    a[key] = b[key];
-  }
-  return a
-}
-
 /*  */
+
 
 
 function createMatcher (
@@ -26346,8 +26337,8 @@ function createMatcher (
   ) {
     var originalRedirect = record.redirect;
     var redirect = typeof originalRedirect === 'function'
-        ? originalRedirect(createRoute(record, location, null, router))
-        : originalRedirect;
+      ? originalRedirect(createRoute(record, location, null, router))
+      : originalRedirect;
 
     if (typeof redirect === 'string') {
       redirect = { path: redirect };
@@ -26461,7 +26452,8 @@ function matchRoute (
     var key = regex.keys[i - 1];
     var val = typeof m[i] === 'string' ? decodeURIComponent(m[i]) : m[i];
     if (key) {
-      params[key.name] = val;
+      // Fix #1994: using * with props: true generates a param named 0
+      params[key.name || 'pathMatch'] = val;
     }
   }
 
@@ -26474,12 +26466,12 @@ function resolveRecordPath (path, record) {
 
 /*  */
 
-
 var positionStore = Object.create(null);
 
 function setupScroll () {
   // Fix for #1585 for Firefox
-  window.history.replaceState({ key: getStateKey() }, '');
+  // Fix for #2195 Add optional third attribute to workaround a bug in safari https://bugs.webkit.org/show_bug.cgi?id=182678
+  window.history.replaceState({ key: getStateKey() }, '', window.location.href.replace(window.location.origin, ''));
   window.addEventListener('popstate', function (e) {
     saveScrollPosition();
     if (e.state && e.state.key) {
@@ -26510,7 +26502,7 @@ function handleScroll (
   // wait until re-render finishes before scrolling
   router.app.$nextTick(function () {
     var position = getScrollPosition();
-    var shouldScroll = behavior(to, from, isPop ? position : null);
+    var shouldScroll = behavior.call(router, to, from, isPop ? position : null);
 
     if (!shouldScroll) {
       return
@@ -27072,7 +27064,10 @@ function poll (
   key,
   isValid
 ) {
-  if (instances[key]) {
+  if (
+    instances[key] &&
+    !instances[key]._isBeingDestroyed // do not reuse being destroyed instance
+  ) {
     cb(instances[key]);
   } else if (isValid()) {
     setTimeout(function () {
@@ -27083,7 +27078,6 @@ function poll (
 
 /*  */
 
-
 var HTML5History = (function (History$$1) {
   function HTML5History (router, base) {
     var this$1 = this;
@@ -27091,8 +27085,9 @@ var HTML5History = (function (History$$1) {
     History$$1.call(this, router, base);
 
     var expectScroll = router.options.scrollBehavior;
+    var supportsScroll = supportsPushState && expectScroll;
 
-    if (expectScroll) {
+    if (supportsScroll) {
       setupScroll();
     }
 
@@ -27108,7 +27103,7 @@ var HTML5History = (function (History$$1) {
       }
 
       this$1.transitionTo(location, function (route) {
-        if (expectScroll) {
+        if (supportsScroll) {
           handleScroll(router, route, current, true);
         }
       });
@@ -27162,7 +27157,7 @@ var HTML5History = (function (History$$1) {
 }(History));
 
 function getLocation (base) {
-  var path = window.location.pathname;
+  var path = decodeURI(window.location.pathname);
   if (base && path.indexOf(base) === 0) {
     path = path.slice(base.length);
   }
@@ -27170,7 +27165,6 @@ function getLocation (base) {
 }
 
 /*  */
-
 
 var HashHistory = (function (History$$1) {
   function HashHistory (router, base, fallback) {
@@ -27281,7 +27275,7 @@ function getHash () {
   // consistent across browsers - Firefox will pre-decode it!
   var href = window.location.href;
   var index = href.indexOf('#');
-  return index === -1 ? '' : href.slice(index + 1)
+  return index === -1 ? '' : decodeURI(href.slice(index + 1))
 }
 
 function getUrl (path) {
@@ -27308,7 +27302,6 @@ function replaceHash (path) {
 }
 
 /*  */
-
 
 var AbstractHistory = (function (History$$1) {
   function AbstractHistory (router, base) {
@@ -27367,6 +27360,8 @@ var AbstractHistory = (function (History$$1) {
 }(History));
 
 /*  */
+
+
 
 var VueRouter = function VueRouter (options) {
   if ( options === void 0 ) options = {};
@@ -27564,7 +27559,7 @@ function createHref (base, fullPath, mode) {
 }
 
 VueRouter.install = install;
-VueRouter.version = '3.0.1';
+VueRouter.version = '3.0.2';
 
 if (inBrowser && window.Vue) {
   window.Vue.use(VueRouter);
@@ -60019,7 +60014,11 @@ var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
     products: [],
     orders: [],
     total: 0,
-    currentuserid: 0
+    currentuserid: 0,
+    userorder: [],
+    emporders: [],
+    prodorders: [],
+    oid: 0
   },
 
   getters: {},
@@ -60037,13 +60036,13 @@ var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
 
     deleteProduct: function deleteProduct(state, product) {
       state.cartdata.splice(state.cartdata.indexOf(product), 1);
-      console.log(index);
+      //console.log(index);
     },
 
     loadProducts: function loadProducts(context) {
       var _this = this;
 
-      var uri = 'http://204.48.30.114/proapi/';
+      var uri = 'http://localhost:8000/proapi/';
       Axios.get(uri).then(function (response) {
         _this.state.products = response.data;
       }).catch(function (error) {
@@ -60054,10 +60053,62 @@ var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
     loadCurrentid: function loadCurrentid(context) {
       var _this2 = this;
 
-      var uri = 'http://204.48.30.114/currentuserapi/';
+      var uri = 'http://localhost:8000/currentuserapi/';
       Axios.get(uri).then(function (response) {
         _this2.state.currentuserid = response.data;
-        console.log(_this2.state.currentuserid);
+        //console.log(this.state.currentuserid);
+        //add loader for all axios and connection points
+      }).catch(function (error) {
+        console.log(error.response);
+      });
+    },
+
+    loadoid: function loadoid(context) {
+      var _this3 = this;
+
+      var uri = 'http://localhost:8000/oid/';
+      Axios.get(uri).then(function (response) {
+        _this3.state.oid = response.data[0].order_id;
+        //console.log(this.state.oid+ "Hey its ");
+        //add loader for all axios and connection points
+      }).catch(function (error) {
+        console.log(error.response);
+      });
+    },
+
+    loadUserorder: function loadUserorder(context) {
+      var _this4 = this;
+
+      var uri = 'http://localhost:8000/userorder/';
+      Axios.get(uri).then(function (response) {
+        _this4.state.userorder = response.data;
+        //console.log(this.state.userorder);
+        //add loader for all axios and connection points
+      }).catch(function (error) {
+        console.log(error.response);
+      });
+    },
+
+    loadEmporder: function loadEmporder(context) {
+      var _this5 = this;
+
+      var uri = 'http://localhost:8000/emporders/';
+      Axios.get(uri).then(function (response) {
+        _this5.state.emporders = response.data;
+        //console.log(this.state.emporder);
+        //add loader for all axios and connection points
+      }).catch(function (error) {
+        console.log(error.response);
+      });
+    },
+
+    loadProdorder: function loadProdorder(context) {
+      var _this6 = this;
+
+      var uri = 'http://localhost:8000/prodorders/';
+      Axios.get(uri).then(function (response) {
+        _this6.state.prodorders = response.data;
+        //console.log(this.state.prodorders);
         //add loader for all axios and connection points
       }).catch(function (error) {
         console.log(error.response);
@@ -60078,6 +60129,18 @@ var store = new __WEBPACK_IMPORTED_MODULE_1_vuex__["a" /* default */].Store({
     },
     loadCid: function loadCid(context) {
       context.commit('loadCurrentid');
+    },
+    loadUo: function loadUo(context) {
+      context.commit('loadUserorder');
+    },
+    loadEo: function loadEo(context) {
+      context.commit('loadEmporder');
+    },
+    loadPo: function loadPo(context) {
+      context.commit('loadProdorder');
+    },
+    loadOid: function loadOid(context) {
+      context.commit('loadoid');
     }
   }
 
@@ -61281,7 +61344,7 @@ exports = module.exports = __webpack_require__(15)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* The snackbar - position it at the bottom and in the middle of the screen */\n#snackbar {\n    visibility: hidden; /* Hidden by default. Visible on click */\n    min-width: 250px; /* Set a default minimum width */\n    margin-left: -125px; /* Divide value of min-width by 2 */\n    background-color: #333; /* Black background color */\n    color: #fff; /* White text color */\n    text-align: center; /* Centered text */\n    border-radius: 2px; /* Rounded borders */\n    padding: 16px; /* Padding */\n    position: fixed; /* Sit on top of the screen */\n    z-index: 1; /* Add a z-index if needed */\n    left: 50%; /* Center the snackbar */\n    bottom: 30px; /* 30px from the bottom */\n}\n\n/* Show the snackbar when clicking on a button (class added with JavaScript) */\n#snackbar.show {\n    visibility: visible; /* Show the snackbar */\n\n/* Add animation: Take 0.5 seconds to fade in and out the snackbar.\nHowever, delay the fade out process for 2.5 seconds */\n    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;\n    animation: fadein 0.5s, fadeout 0.5s 2.5s;\n}\n\n/* Animations to fade the snackbar in and out */\n@-webkit-keyframes fadein {\nfrom {bottom: 0; opacity: 0;\n}\nto {bottom: 30px; opacity: 1;\n}\n}\n@keyframes fadein {\nfrom {bottom: 0; opacity: 0;\n}\nto {bottom: 30px; opacity: 1;\n}\n}\n@-webkit-keyframes fadeout {\nfrom {bottom: 30px; opacity: 1;\n}\nto {bottom: 0; opacity: 0;\n}\n}\n@keyframes fadeout {\nfrom {bottom: 30px; opacity: 1;\n}\nto {bottom: 0; opacity: 0;\n}\n}\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* The snackbar - position it at the bottom and in the middle of the screen */\n#snackbar {\n    visibility: hidden; /* Hidden by default. Visible on click */\n    min-width: 250px; /* Set a default minimum width */\n    margin-left: -125px; /* Divide value of min-width by 2 */\n    background-color: #333; /* Black background color */\n    color: #fff; /* White text color */\n    text-align: center; /* Centered text */\n    border-radius: 2px; /* Rounded borders */\n    padding: 16px; /* Padding */\n    position: fixed; /* Sit on top of the screen */\n    z-index: 1; /* Add a z-index if needed */\n    left: 50%; /* Center the snackbar */\n    bottom: 30px; /* 30px from the bottom */\n}\n\n/* Show the snackbar when clicking on a button (class added with JavaScript) */\n#snackbar.show {\n    visibility: visible; /* Show the snackbar */\n\n/* Add animation: Take 0.5 seconds to fade in and out the snackbar.\nHowever, delay the fade out process for 2.5 seconds */\n    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;\n    animation: fadein 0.5s, fadeout 0.5s 2.5s;\n}\n\n/* Animations to fade the snackbar in and out */\n@-webkit-keyframes fadein {\nfrom {bottom: 0; opacity: 0;\n}\nto {bottom: 30px; opacity: 1;\n}\n}\n@keyframes fadein {\nfrom {bottom: 0; opacity: 0;\n}\nto {bottom: 30px; opacity: 1;\n}\n}\n@-webkit-keyframes fadeout {\nfrom {bottom: 30px; opacity: 1;\n}\nto {bottom: 0; opacity: 0;\n}\n}\n@keyframes fadeout {\nfrom {bottom: 30px; opacity: 1;\n}\nto {bottom: 0; opacity: 0;\n}\n}\n", ""]);
 
 // exports
 
@@ -61325,8 +61388,6 @@ module.exports = function listToStyles (parentId, list) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
 //
 //
 //
@@ -62133,19 +62194,30 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       counter: 0,
       tot: 0,
-      currid: 0
+      currid: 0,
+      productsarray: [],
+      curroid: 0,
+      check: 0,
+      emp: 0
+
     };
   },
 
   computed: {
     products: function products() {
-      return this.$store.state.cartdata;
+
+      return this.productsarray;
     },
 
 
@@ -62177,6 +62249,47 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.tot = 0;
       this.$store.commit('deleteProduct', product);
     },
+    addOrder: function addOrder() {
+      this.productsarray = [];
+      //contraversal just test network
+      this.$store.dispatch('loadOid');
+      this.curroid = this.$store.state.oid;
+      this.curroid += 1;
+
+      console.log(this.curroid);
+      axios.post('/storeorder', { order_id: this.currid, user_id: this.$store.state.currentuserid, ostatus: 1 }).then(function (response) {
+        //varible to check if this is true
+        console.log(response);
+        this.$store.dispatch('loadOid');
+        this.curroid = this.$store.state.oid;
+        console.log("track " + this.curroid);
+        this.curroid += 1;
+
+        this.check = 1;
+      }).catch(function (error) {
+        console.log(error.response);
+      });
+      //this.$store.state.cartdata = [];
+      //add if statement to check if varible is true
+      if (this.check = 1) {
+        //check this if statement
+
+        //this.curroid += 1;
+        console.log("track " + this.curroid);
+        for (var i = 0; i < this.$store.state.cartdata.length; i++) {
+          // the 2 must be the length of the filter product array
+          axios.post('/storeorder_product', { o_id: this.curroid, p_id: this.$store.state.cartdata[i].id, quantity: this.$store.state.cartdata[i].quant }).then(function (response) {
+            //varible to check if this is true
+            console.log(response);
+          }).catch(function (error) {
+            console.log(error.response);
+          });
+        }
+      }
+
+      //console.log("end");
+
+    },
     copyArray: function copyArray() {
       this.$store.commit('copyArray');
     },
@@ -62189,7 +62302,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       return pq;
     },
     clearCart: function clearCart() {
-      this.$store.state.cartdata = [];
+
       this.tot = 0;
     },
     minusQuant: function minusQuant(product) {
@@ -62210,8 +62323,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         });
       }
     }
-  }
+  },
 
+  mounted: function mounted() {
+    this.$store.dispatch('loadUo');
+    this.$store.dispatch('loadEo');
+    this.$store.dispatch('loadPo');
+    this.$store.dispatch('loadOid');
+  }
 });
 
 /***/ }),
@@ -62368,7 +62487,7 @@ var render = function() {
                     )
                   : _vm._e(),
                 _vm._v(" "),
-                _vm.total < 100 && (_vm.currentid == 8 || _vm.currentid == 7)
+                _vm.total < 100
                   ? _c(
                       "button",
                       {
@@ -62391,26 +62510,6 @@ var render = function() {
                             " ) " +
                             _vm._s(_vm.fullcart) +
                             "\r\n                    "
-                        )
-                      ]
-                    )
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm.currentid != 7 && _vm.currentid != 8
-                  ? _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-danger",
-                        staticStyle: {
-                          width: "100%",
-                          position: "relative",
-                          bottom: "0"
-                        },
-                        attrs: { type: "submit" }
-                      },
-                      [
-                        _vm._v(
-                          "\r\n                      Order privileges inactive \r\n                    "
                         )
                       ]
                     )
@@ -62480,14 +62579,17 @@ var render = function() {
                       "a",
                       {
                         staticClass: "btn btn-primary",
-                        attrs: { href: "/orders", "data-dismiss": "modal" },
+                        attrs: { href: "/cart", "data-dismiss": "modal" },
                         on: {
                           click: function($event) {
-                            _vm.copyArray(), _vm.send(), _vm.clearCart()
+                            _vm.copyArray(),
+                              _vm.send(),
+                              _vm.clearCart(),
+                              _vm.addOrder()
                           }
                         }
                       },
-                      [_vm._v("Accept")]
+                      [_vm._v("\r\n                Accept\r\n              ")]
                     ),
                     _vm._v(" "),
                     _c(
@@ -62884,28 +62986,40 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   computed: {
     products: function products() {
+      return this.$store.state.userorder;
+    },
+    orders: function orders() {
       return this.$store.state.orders;
     },
 
-    total: function total() {
-      var tot = 0;
-      this.$store.state.orders.forEach(function (product) {
-        return tot += product.price;
+
+    filteredProducts: function filteredProducts() {
+      var _this = this;
+
+      this.tot = 0;
+      return this.$store.state.userorder.filter(function (product) {
+
+        _this.tot += product.price;
+
+        return _this.order.push(product);
       });
-      return tot;
+    },
+    total: function total() {
+
+      return this.tot;
     }
 
   },
   data: function data() {
     return {
-      counter: 0
+      counter: 0,
+      order: [],
+      tot: 0,
+      polling: null
     };
   },
 
@@ -62913,21 +63027,33 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   created: function created() {
     this.$store.dispatch('load');
     this.$store.dispatch('loadCid');
+    this.$store.dispatch('loadUo');
+    this.pollData();
     console.log(this.$store.state.currentuserid);
   },
   methods: {
     deleteProduct: function deleteProduct(product) {
       this.$store.commit('deleteProduct', product.id);
+    },
+    pollData: function pollData() {
+      var _this2 = this;
+
+      this.polling = setInterval(function () {
+        _this2.$store.dispatch('loadPo');
+        _this2.$store.dispatch('loadEo');
+        _this2.$store.dispatch('loadCid');
+      }, 5000);
     }
   },
 
   mounted: function mounted() {
-    var _this = this;
+    var _this3 = this;
 
     console.log(this.$store.state.currentuserid);
+    console.log(this.$store.state.userorder);
 
     Echo.private('emp').listen('EmpEvent', function (e) {
-      if (e.number.id == _this.$store.state.currentuserid) _this.$store.state.orders = [];
+      if (e.number.id == _this3.$store.state.currentuserid) _this3.$store.state.orders = [];
       console.log(e.number.id);
     });
   }
@@ -62954,7 +63080,7 @@ var render = function() {
               staticStyle: { "min-height": "300px" }
             },
             [
-              _vm.total > 0
+              _vm.filteredProducts.length > 0
                 ? _c("div", { staticClass: "card card-default" }, [
                     _c(
                       "div",
@@ -62972,7 +63098,10 @@ var render = function() {
                           [
                             _vm._m(0),
                             _vm._v(" "),
-                            _vm._l(_vm.products, function(product, index) {
+                            _vm._l(_vm.filteredProducts, function(
+                              product,
+                              index
+                            ) {
                               return _c(
                                 "span",
                                 {
@@ -63003,41 +63132,11 @@ var render = function() {
                   ])
                 : _vm._e(),
               _vm._v(" "),
-              _vm.total == 0
-                ? _c("div", { staticClass: "card card-default" }, [
-                    _c(
-                      "div",
-                      {
-                        staticClass: "card-body",
-                        staticStyle: { "min-height": "200px" }
-                      },
-                      [
-                        _c("h2", { staticStyle: { padding: "0px" } }, [
-                          _vm._v("No orders have been placed")
-                        ]),
-                        _vm._v(" "),
-                        _vm._l(_vm.products, function(product, index) {
-                          return _c("p", [
-                            _vm._v(
-                              "\n                            " +
-                                _vm._s(product.name) +
-                                "\n                          "
-                            )
-                          ])
-                        }),
-                        _vm._v(" "),
-                        _c("p", [
-                          _vm._v(
-                            "\n                            To place an order go to the menu under the menu navigation, select items you would like to purchase and checkout.\n                          "
-                          )
-                        ])
-                      ],
-                      2
-                    )
-                  ])
+              _vm.filteredProducts.length == 0
+                ? _c("div", { staticClass: "card card-default" }, [_vm._m(1)])
                 : _vm._e(),
               _vm._v(" "),
-              _vm._m(1)
+              _vm._m(2)
             ]
           )
         ])
@@ -63052,6 +63151,26 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("strong", [_vm._v(" Products in order:       "), _c("br")])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      { staticClass: "card-body", staticStyle: { "min-height": "200px" } },
+      [
+        _c("h2", { staticStyle: { padding: "0px" } }, [
+          _vm._v("No orders have been placed")
+        ]),
+        _vm._v(" "),
+        _c("p", [
+          _vm._v(
+            "\n                            To place an order go to the menu under the menu navigation, select items you would like to purchase and checkout.\n                          "
+          )
+        ])
+      ]
+    )
   },
   function() {
     var _vm = this
@@ -63166,7 +63285,7 @@ exports = module.exports = __webpack_require__(15)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* The snackbar - position it at the bottom and in the middle of the screen */\n#snackbar {\n    visibility: hidden; /* Hidden by default. Visible on click */\n    min-width: 250px; /* Set a default minimum width */\n    margin-left: -125px; /* Divide value of min-width by 2 */\n    background-color: #333; /* Black background color */\n    color: #fff; /* White text color */\n    text-align: center; /* Centered text */\n    border-radius: 2px; /* Rounded borders */\n    padding: 16px; /* Padding */\n    position: fixed; /* Sit on top of the screen */\n    z-index: 1; /* Add a z-index if needed */\n    left: 50%; /* Center the snackbar */\n    bottom: 30px; /* 30px from the bottom */\n}\n\n/* Show the snackbar when clicking on a button (class added with JavaScript) */\n#snackbar.show {\n    visibility: visible; /* Show the snackbar */\n\n/* Add animation: Take 0.5 seconds to fade in and out the snackbar.\nHowever, delay the fade out process for 2.5 seconds */\n    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;\n    animation: fadein 0.5s, fadeout 0.5s 2.5s;\n}\n\n/* Animations to fade the snackbar in and out */\n@-webkit-keyframes fadein {\nfrom {bottom: 0; opacity: 0;\n}\nto {bottom: 30px; opacity: 1;\n}\n}\n@keyframes fadein {\nfrom {bottom: 0; opacity: 0;\n}\nto {bottom: 30px; opacity: 1;\n}\n}\n@-webkit-keyframes fadeout {\nfrom {bottom: 30px; opacity: 1;\n}\nto {bottom: 0; opacity: 0;\n}\n}\n@keyframes fadeout {\nfrom {bottom: 30px; opacity: 1;\n}\nto {bottom: 0; opacity: 0;\n}\n}\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* The snackbar - position it at the bottom and in the middle of the screen */\n#snackbar {\n    visibility: hidden; /* Hidden by default. Visible on click */\n    min-width: 250px; /* Set a default minimum width */\n    margin-left: -125px; /* Divide value of min-width by 2 */\n    background-color: #333; /* Black background color */\n    color: #fff; /* White text color */\n    text-align: center; /* Centered text */\n    border-radius: 2px; /* Rounded borders */\n    padding: 16px; /* Padding */\n    position: fixed; /* Sit on top of the screen */\n    z-index: 1; /* Add a z-index if needed */\n    left: 50%; /* Center the snackbar */\n    bottom: 30px; /* 30px from the bottom */\n}\n\n/* Show the snackbar when clicking on a button (class added with JavaScript) */\n#snackbar.show {\n    visibility: visible; /* Show the snackbar */\n\n/* Add animation: Take 0.5 seconds to fade in and out the snackbar.\nHowever, delay the fade out process for 2.5 seconds */\n    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;\n    animation: fadein 0.5s, fadeout 0.5s 2.5s;\n}\n\n/* Animations to fade the snackbar in and out */\n@-webkit-keyframes fadein {\nfrom {bottom: 0; opacity: 0;\n}\nto {bottom: 30px; opacity: 1;\n}\n}\n@keyframes fadein {\nfrom {bottom: 0; opacity: 0;\n}\nto {bottom: 30px; opacity: 1;\n}\n}\n@-webkit-keyframes fadeout {\nfrom {bottom: 30px; opacity: 1;\n}\nto {bottom: 0; opacity: 0;\n}\n}\n@keyframes fadeout {\nfrom {bottom: 30px; opacity: 1;\n}\nto {bottom: 0; opacity: 0;\n}\n}\n", ""]);
 
 // exports
 
@@ -63243,14 +63362,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   computed: {
     orders: function orders() {
-      return this.Orders;
+      console.log(this.$store.state.emporders);
+      return this.$store.state.emporders;
     },
     products: function products() {
-      return this.Products;
+      console.log(this.$store.state.prodorders);
+      return this.$store.state.prodorders;
     },
     username: function username() {
       return this.user;
@@ -63269,7 +63392,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       Products: [],
       user: "",
       orderNum: 0,
-      message: ""
+      message: "",
+      polling: null
     };
   },
 
@@ -63283,12 +63407,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
          console.log(error);
        });
      }, */
+
+    pollData: function pollData() {
+      var _this = this;
+
+      this.polling = setInterval(function () {
+        _this.$store.dispatch('loadPo');
+        _this.$store.dispatch('loadEo');
+      }, 10000);
+    },
     deleteO: function deleteO(order) {
-      this.Orders.splice(this.Orders.indexOf(order), 1);
+      this.$store.state.emporders.splice(this.$store.state.emporders.indexOf(order), 1);
       this.message = "Order declined";
     },
     completed: function completed(order) {
-      this.Orders.splice(this.Orders.indexOf(order), 1);
+      this.$store.state.emporders.splice(this.$store.state.emporders.indexOf(order), 1);
       this.message = "Order completed";
       axios.post('/collectapi', { user: order.user.name, email: order.user.email, number: this.orderNum }).then(function (response) {
         return console.log(response);
@@ -63301,7 +63434,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         usernames: order.user
       }).then(function (response) {
 
-        console.log(response);
+        //  console.log(response);
       }).catch(function (error) {
         console.log(error.response);
       });
@@ -63323,20 +63456,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
   },
 
+  beforeDestroy: function beforeDestroy() {
+    clearInterval(this.polling);
+  },
   mounted: function mounted() {
-    var _this = this;
-
-    Echo.private('order').listen('OrderEvent', function (e) {
-      _this.Orders.push(e); //call the particulars of this object in the template v-for
-
-      console.log(e);
-
-      _this.Products = e.order;
-
-      console.log(e.user.email);
-
-      _this.orderNum = Math.floor(Math.random() * (25 - 1 + 1)) + 1;
-    });
+    this.$store.dispatch('loadUo');
+    this.$store.dispatch('loadEo');
+    this.$store.dispatch('loadPo');
+  },
+  created: function created() {
+    this.pollData();
   }
 });
 
@@ -63352,9 +63481,7 @@ var render = function() {
     _c("div", { staticClass: "row justify-content-center" }, [
       _c("div", { staticClass: "col-md-12" }, [
         _c("div", { staticClass: "card card-default" }, [
-          _c("div", { staticClass: "card-header" }, [
-            _vm._v("Employee Dashboard")
-          ]),
+          _vm._m(0),
           _vm._v(" "),
           _c(
             "div",
@@ -63372,22 +63499,28 @@ var render = function() {
                     _vm._v(" "),
                     _c("p", { staticStyle: { padding: "0px" } }, [
                       _c("strong", [_vm._v(" User: ")]),
-                      _vm._v(" " + _vm._s(order.user.name) + " ")
+                      _vm._v(" " + _vm._s(order.email) + " ")
                     ]),
                     _vm._v(" "),
                     _c(
                       "table",
                       { staticClass: "table-repsonsive table-bordered " },
                       [
-                        _vm._m(0, true),
+                        _vm._m(1, true),
                         _vm._v(" "),
-                        _vm._l(order.order, function(product) {
+                        _vm._l(_vm.products, function(product) {
                           return _c("tbody", [
-                            _c("td", [_vm._v(_vm._s(product.name))]),
+                            order.id == product.user_id
+                              ? _c("td", [_vm._v(_vm._s(product.name))])
+                              : _vm._e(),
                             _vm._v(" "),
-                            _c("td", [_vm._v("R" + _vm._s(product.price))]),
+                            order.id == product.user_id
+                              ? _c("td", [_vm._v("R" + _vm._s(product.price))])
+                              : _vm._e(),
                             _vm._v(" "),
-                            _c("td", [_vm._v(_vm._s(product.quant))])
+                            order.id == product.user_id
+                              ? _c("td", [_vm._v(_vm._s(product.quantity))])
+                              : _vm._e()
                           ])
                         })
                       ],
@@ -63444,7 +63577,7 @@ var render = function() {
                 _vm._v(_vm._s(_vm.messager))
               ]),
               _vm._v(" "),
-              _vm._m(1)
+              _vm._m(2)
             ],
             2
           )
@@ -63454,6 +63587,41 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card-header" }, [
+      _vm._v("Employee Dashboard\n\n                  "),
+      _c(
+        "div",
+        {
+          staticClass: "btn-group-sm",
+          staticStyle: { float: "right" },
+          attrs: { role: "group", "aria-label": "Basic example" }
+        },
+        [
+          _c(
+            "button",
+            { staticClass: "btn btn-dark btn-sm", attrs: { type: "button" } },
+            [_vm._v("Incoming")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            { staticClass: "btn btn-dark", attrs: { type: "button" } },
+            [_vm._v("Processing")]
+          ),
+          _vm._v(" "),
+          _c(
+            "button",
+            { staticClass: "btn btn-dark", attrs: { type: "button" } },
+            [_vm._v("Complete")]
+          )
+        ]
+      )
+    ])
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement

@@ -34,8 +34,6 @@
     <link rel="stylesheet" href="https://unpkg.com/vue-material@beta/dist/theme/default.css">
 
 
-    <script src="https://unpkg.com/vue"></script>
-    <script src="https://unpkg.com/vue-material@beta"></script>
 
 
 

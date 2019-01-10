@@ -3,7 +3,16 @@
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card card-default">
-                    <div class="card-header">Employee Dashboard</div>
+
+                    <div class="card-header">Employee Dashboard
+
+                      <div class="btn-group-sm" role="group" aria-label="Basic example" style="float: right;">
+                        <button type="button" class="btn btn-dark btn-sm">Incoming</button>
+                        <button type="button" class="btn btn-dark">Processing</button>
+                        <button type="button" class="btn btn-dark">Complete</button>
+                      </div>
+
+                    </div>
 
                     <div class="card-body" style="min-height: 300px;">
 
@@ -11,25 +20,18 @@
                             <div class="card-body">
                               <h2 style="padding:0px;">Order: {{index + 1}} </h2>
 
-                              <p style="padding:0px;"><strong> User: </strong> {{order.user.name}} </p>
+                              <p style="padding:0px;"><strong> User: </strong> {{order.email}} </p>
                               <table class="table-repsonsive table-bordered ">
                                  <thead>
                                       <th scope="col">Product</th>
                                       <th scope="col">Price</th>
                                       <th scope="col">Quantity</th>
                                   </thead>
-                                  <tbody v-for="product in order.order">
+                                  <tbody v-for="product in products" >
 
-
-                                      <td>{{product.name}}</td>
-                                      <td>R{{product.price}}</td>
-                                      <td>{{product.quant}}</td>
-
-
-
-
-
-
+                                      <td v-if="order.id == product.user_id">{{product.name}}</td>
+                                      <td v-if="order.id == product.user_id">R{{product.price}}</td>
+                                      <td v-if="order.id == product.user_id">{{product.quantity}}</td>
 
                                   </tbody>
 
@@ -68,10 +70,12 @@
     export default {
       computed: {
           orders(){
-            return this.Orders
+            console.log(this.$store.state.emporders);
+            return this.$store.state.emporders;
           },
           products(){
-            return this.Products;
+            console.log(this.$store.state.prodorders);
+            return this.$store.state.prodorders;
           },
           username(){
             return this.user;
@@ -91,26 +95,28 @@
           Products: [],
           user: "",
           orderNum: 0,
-          message: ""
+          message: "",
+          polling: null
         }
       },
       methods: {
-       /*  complete(){
-          axios.post('/send', {
-            complete: true
-          }).then(response => {
-            console.log(response);
-          }).catch(error => {
-            console.log(error);
-          });
-        }, */
+
+        pollData () {
+      		this.polling = setInterval(() => {
+            this.$store.dispatch('loadPo');
+            this.$store.dispatch('loadEo');
+      		}, 10000)
+      	},
+
+
+
         deleteO(order){
-          this.Orders.splice(this.Orders.indexOf(order), 1);
+          this.$store.state.emporders.splice(this.$store.state.emporders.indexOf(order), 1);
           this.message = "Order declined";
         },
 
         completed(order){
-          this.Orders.splice(this.Orders.indexOf(order), 1);
+          this.$store.state.emporders.splice(this.$store.state.emporders.indexOf(order), 1);
           this.message = "Order completed";
           axios.post('/collectapi', {user: order.user.name, email: order.user.email, number: this.orderNum}).then((response)=> console.log(response))
           .catch((error) => console.log(error.response));
@@ -121,7 +127,7 @@
               usernames: order.user
           }).then(response => {
 
-          console.log(response);
+        //  console.log(response);
           }).catch(error => {
             console.log(error.response);
 
@@ -147,22 +153,18 @@
 
       },
 
-
+      beforeDestroy () {
+        clearInterval(this.polling)
+      },
 
       mounted(){
+        this.$store.dispatch('loadUo');
+        this.$store.dispatch('loadEo');
+        this.$store.dispatch('loadPo');
+      },
 
-        Echo.private('order').listen('OrderEvent', (e) => {
-            this.Orders.push(e); //call the particulars of this object in the template v-for
-
-            console.log(e);
-
-
-            this.Products = e.order;
-
-            console.log(e.user.email);
-
-            this.orderNum = Math.floor(Math.random() * (25 - 1 + 1)) + 1;
-        });
+      created (){
+        this.pollData()
       }
     }
 </script>

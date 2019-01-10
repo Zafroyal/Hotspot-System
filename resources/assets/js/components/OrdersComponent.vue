@@ -7,12 +7,12 @@
 
 
                     <div class="card-body" style="min-height: 300px;">
-                      <div class="card card-default" v-if='total > 0'>
+                      <div class="card card-default" v-if='filteredProducts.length > 0'>
                           <div class="card-body" style="min-height: 100px;">
                             <h2 style="padding:0px;">Your current Order</h2>
 
 
-                              <p ><strong> Products in order:       <br/> </strong> <span style="" v-for="(product, index) in products" style="padding-right:10px;">
+                              <p ><strong> Products in order:       <br/> </strong> <span style="" v-for="(product, index) in filteredProducts" style="padding-right:10px;">
                                 {{product.name}}
                               </span>
                               </p>
@@ -28,14 +28,11 @@
 
                       </div>
 
-                      <div class="card card-default" v-if='total == 0'>
+                      <div class="card card-default" v-if='filteredProducts.length == 0'>
                           <div class="card-body" style="min-height: 200px;">
                             <h2 style="padding:0px;">No orders have been placed</h2>
 
 
-                              <p  v-for="(product, index) in products">
-                                {{product.name}}
-                              </p>
 
                               <p>
                                 To place an order go to the menu under the menu navigation, select items you would like to purchase and checkout.
@@ -67,34 +64,62 @@
     export default {
       computed: {
         products(){
+          return this.$store.state.userorder;
+        },
+        orders(){
           return this.$store.state.orders;
         },
-        total: function(){
-          let tot = 0;
-          this.$store.state.orders.forEach(product => tot += product.price);
-          return tot;
-        },
+
+        filteredProducts:  function(){
+            this.tot = 0;
+            return this.$store.state.userorder.filter((product) => {
+
+                this.tot += product.price;
+
+                return this.order.push(product);
+
+            });
+          },
+          total: function(){
+
+            return this.tot;
+          }
 
       },
       data() {
         return {
             counter: 0,
+            order: [],
+            tot: 0,
+            polling: null
         }
       },
 
       created: function(){
         this.$store.dispatch('load');
         this.$store.dispatch('loadCid');
+        this.$store.dispatch('loadUo');
+          this.pollData()
         console.log(this.$store.state.currentuserid);
       },
       methods: {
         deleteProduct(product){
-          this.$store.commit('deleteProduct', product.id)
+          this.$store.commit('deleteProduct', product.id);
+        },
+
+        pollData () {
+          this.polling = setInterval(() => {
+            this.$store.dispatch('loadPo');
+            this.$store.dispatch('loadEo');
+            this.$store.dispatch('loadCid');
+          }, 5000)
         }
       },
 
       mounted(){
         console.log(this.$store.state.currentuserid);
+        console.log(this.$store.state.userorder);
+
 
         Echo.private('emp').listen('EmpEvent', (e) => {
               if(e.number.id == this.$store.state.currentuserid )

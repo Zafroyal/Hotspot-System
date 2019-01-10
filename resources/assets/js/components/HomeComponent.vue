@@ -7,8 +7,6 @@
                       <!-- Use a button to open the snackbar -->
 
 
-
-
                       <div class="dropdown" style="float: right;">
                         <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                           Categories

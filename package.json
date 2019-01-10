@@ -33,7 +33,7 @@
     "node-waves": "^0.7.6",
     "pusher-js": "^4.3.0",
     "vue-axios": "^2.1.2",
-    "vue-router": "^3.0.1",
+    "vue-router": "^3.0.2",
     "vuex": "^3.0.1",
     "vuex-persistedstate": "^2.5.4"
   },

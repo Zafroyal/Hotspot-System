@@ -65,7 +65,7 @@
                     <button  style="width: 100%; position:relative; bottom:0" type="submit" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal" v-if='total < 100 '>
                       Checkout ( Total: R{{total}} ) {{fullcart}}
                     </button>
-                  
+
                     <button  style="width: 100%; position:relative; bottom:0" type="submit" class="btn btn-danger" data-toggle="modal" data-target="#cartfull" v-if='total > 100'>
                        {{fullcart}}
                     </button>
@@ -90,8 +90,15 @@
            Once an order is placed they will be no refunds so please ensure that your order is satisfying.
           </div>
           <div class="modal-footer">
-            <a  href="/orders" class="btn btn-primary" data-dismiss="modal"  v-on:click="copyArray(), send(), clearCart()">Accept</a>
-            <a  class="btn btn-danger"   data-dismiss="modal"  >Decline</a>
+
+              <a href="/cart" class="btn btn-primary" data-dismiss="modal" v-on:click="copyArray(), send(), clearCart(), addOrder()">
+                Accept
+              </a>
+              <a  class="btn btn-danger" data-dismiss="modal"  >Decline</a>
+
+
+            </form>
+
           </div>
         </div>
       </div>
@@ -170,11 +177,18 @@
             counter: 0,
             tot: 0,
             currid: 0,
+            productsarray: [],
+            curroid: 0,
+            check: 0,
+            emp: 0
+
+
         }
       },
         computed: {
           products(){
-            return this.$store.state.cartdata;
+
+            return this.productsarray;
           },
 
           total: function(){
@@ -199,9 +213,60 @@
         },
 
         methods: {
+
           deleteProduct(product){
             this.tot = 0;
             this.$store.commit('deleteProduct',product)
+          },
+
+
+
+          addOrder(){
+            this.productsarray = [];
+            //contraversal just test network
+            this.$store.dispatch('loadOid');
+            this.curroid  = this.$store.state.oid;
+            this.curroid += 1;
+
+            console.log(this.curroid)
+            axios.post('/storeorder',{ order_id: this.currid, user_id: this.$store.state.currentuserid , ostatus: 1}).then( function (response) {
+            //varible to check if this is true
+                      console.log(response);
+                      this.$store.dispatch('loadOid');
+                      this.curroid  = this.$store.state.oid;
+                      console.log("track " + this.curroid);
+                      this.curroid += 1;
+
+                      this.check = 1;
+
+
+
+
+            }).catch(function (error) {
+                        console.log(error.response);
+            });
+             //this.$store.state.cartdata = [];
+            //add if statement to check if varible is true
+            if( this.check = 1){ //check this if statement
+
+              //this.curroid += 1;
+              console.log("track " + this.curroid);
+              for (var i = 0; i < this.$store.state.cartdata.length; i++){ // the 2 must be the length of the filter product array
+                axios.post('/storeorder_product',{ o_id: this.curroid , p_id: this.$store.state.cartdata[i].id, quantity: this.$store.state.cartdata[i].quant}).then( function (response) {
+                //varible to check if this is true
+                          console.log(response);
+
+                }).catch(function (error) {
+                            console.log(error.response);
+                });
+              }
+
+            }
+
+
+            //console.log("end");
+
+
           },
 
           copyArray(){
@@ -216,7 +281,7 @@
             return pq;
           },
           clearCart(){
-              this.$store.state.cartdata = [];
+
               this.tot = 0;
           },
           minusQuant(product){
@@ -238,7 +303,21 @@
               });
             }
           }
-        }
+        },
+
+        mounted(){
+          this.$store.dispatch('loadUo');
+          this.$store.dispatch('loadEo');
+          this.$store.dispatch('loadPo');
+          this.$store.dispatch('loadOid');
+        
+
+
+
+
+        },
+
+
 
     }
 </script>
