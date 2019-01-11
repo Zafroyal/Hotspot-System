@@ -30,7 +30,7 @@ class OrdersController extends Controller
 
       public function oid()
       {
-        $oid =  DB::select("SELECT order_id FROM orders WHERE order_id = (select MAX(order_id) from orders)");
+        $oid =  DB::select("SELECT AUTO_INCREMENT AS 'order_id' FROM INFORMATION_SCHEMA.TABLES WHERE table_name = 'orders'");
         return $oid; //push out json
       }
 

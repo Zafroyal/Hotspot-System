@@ -62216,8 +62216,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
   computed: {
     products: function products() {
-
-      return this.productsarray;
+      return this.$store.state.cartdata;
     },
 
 
@@ -62250,45 +62249,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.$store.commit('deleteProduct', product);
     },
     addOrder: function addOrder() {
-      this.productsarray = [];
-      //contraversal just test network
+
+      this.productsarray = this.$store.state.cartdata;
+      this.$store.state.cartdata = [];
+
       this.$store.dispatch('loadOid');
       this.curroid = this.$store.state.oid;
-      this.curroid += 1;
 
-      console.log(this.curroid);
-      axios.post('/storeorder', { order_id: this.currid, user_id: this.$store.state.currentuserid, ostatus: 1 }).then(function (response) {
-        //varible to check if this is true
+      axios.post('/storeorder', { order_id: this.curroid, user_id: this.$store.state.currentuserid, ostatus: 1 }).then(function (response) {
         console.log(response);
-        this.$store.dispatch('loadOid');
-        this.curroid = this.$store.state.oid;
-        console.log("track " + this.curroid);
-        this.curroid += 1;
-
-        this.check = 1;
       }).catch(function (error) {
         console.log(error.response);
       });
-      //this.$store.state.cartdata = [];
-      //add if statement to check if varible is true
-      if (this.check = 1) {
-        //check this if statement
 
-        //this.curroid += 1;
-        console.log("track " + this.curroid);
-        for (var i = 0; i < this.$store.state.cartdata.length; i++) {
-          // the 2 must be the length of the filter product array
-          axios.post('/storeorder_product', { o_id: this.curroid, p_id: this.$store.state.cartdata[i].id, quantity: this.$store.state.cartdata[i].quant }).then(function (response) {
-            //varible to check if this is true
-            console.log(response);
-          }).catch(function (error) {
-            console.log(error.response);
-          });
-        }
+      for (var i = 0; i < this.productsarray.length; i++) {
+        axios.post('/storeorder_product', { o_id: this.curroid, p_id: this.productsarray[i].id, quantity: this.productsarray[i].quant }).then(function (response) {
+          console.log(response);
+        }).catch(function (error) {
+          console.log(error.response);
+        });
       }
-
-      //console.log("end");
-
     },
     copyArray: function copyArray() {
       this.$store.commit('copyArray');
@@ -63285,7 +63265,7 @@ exports = module.exports = __webpack_require__(15)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* The snackbar - position it at the bottom and in the middle of the screen */\n#snackbar {\n    visibility: hidden; /* Hidden by default. Visible on click */\n    min-width: 250px; /* Set a default minimum width */\n    margin-left: -125px; /* Divide value of min-width by 2 */\n    background-color: #333; /* Black background color */\n    color: #fff; /* White text color */\n    text-align: center; /* Centered text */\n    border-radius: 2px; /* Rounded borders */\n    padding: 16px; /* Padding */\n    position: fixed; /* Sit on top of the screen */\n    z-index: 1; /* Add a z-index if needed */\n    left: 50%; /* Center the snackbar */\n    bottom: 30px; /* 30px from the bottom */\n}\n\n/* Show the snackbar when clicking on a button (class added with JavaScript) */\n#snackbar.show {\n    visibility: visible; /* Show the snackbar */\n\n/* Add animation: Take 0.5 seconds to fade in and out the snackbar.\nHowever, delay the fade out process for 2.5 seconds */\n    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;\n    animation: fadein 0.5s, fadeout 0.5s 2.5s;\n}\n\n/* Animations to fade the snackbar in and out */\n@-webkit-keyframes fadein {\nfrom {bottom: 0; opacity: 0;\n}\nto {bottom: 30px; opacity: 1;\n}\n}\n@keyframes fadein {\nfrom {bottom: 0; opacity: 0;\n}\nto {bottom: 30px; opacity: 1;\n}\n}\n@-webkit-keyframes fadeout {\nfrom {bottom: 30px; opacity: 1;\n}\nto {bottom: 0; opacity: 0;\n}\n}\n@keyframes fadeout {\nfrom {bottom: 30px; opacity: 1;\n}\nto {bottom: 0; opacity: 0;\n}\n}\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n/* The snackbar - position it at the bottom and in the middle of the screen */\n#snackbar {\n    visibility: hidden; /* Hidden by default. Visible on click */\n    min-width: 250px; /* Set a default minimum width */\n    margin-left: -125px; /* Divide value of min-width by 2 */\n    background-color: #333; /* Black background color */\n    color: #fff; /* White text color */\n    text-align: center; /* Centered text */\n    border-radius: 2px; /* Rounded borders */\n    padding: 16px; /* Padding */\n    position: fixed; /* Sit on top of the screen */\n    z-index: 1; /* Add a z-index if needed */\n    left: 50%; /* Center the snackbar */\n    bottom: 30px; /* 30px from the bottom */\n}\n\n/* Show the snackbar when clicking on a button (class added with JavaScript) */\n#snackbar.show {\n    visibility: visible; /* Show the snackbar */\n\n/* Add animation: Take 0.5 seconds to fade in and out the snackbar.\nHowever, delay the fade out process for 2.5 seconds */\n    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;\n    animation: fadein 0.5s, fadeout 0.5s 2.5s;\n}\n\n/* Animations to fade the snackbar in and out */\n@-webkit-keyframes fadein {\nfrom {bottom: 0; opacity: 0;\n}\nto {bottom: 30px; opacity: 1;\n}\n}\n@keyframes fadein {\nfrom {bottom: 0; opacity: 0;\n}\nto {bottom: 30px; opacity: 1;\n}\n}\n@-webkit-keyframes fadeout {\nfrom {bottom: 30px; opacity: 1;\n}\nto {bottom: 0; opacity: 0;\n}\n}\n@keyframes fadeout {\nfrom {bottom: 30px; opacity: 1;\n}\nto {bottom: 0; opacity: 0;\n}\n}\n", ""]);
 
 // exports
 
@@ -63398,16 +63378,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   },
 
   methods: {
-    /*  complete(){
-       axios.post('/send', {
-         complete: true
-       }).then(response => {
-         console.log(response);
-       }).catch(error => {
-         console.log(error);
-       });
-     }, */
-
     pollData: function pollData() {
       var _this = this;
 

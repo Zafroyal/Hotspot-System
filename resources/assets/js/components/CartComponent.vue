@@ -172,23 +172,22 @@
 
 <script>
     export default {
-      data() {
-        return {
-            counter: 0,
-            tot: 0,
-            currid: 0,
-            productsarray: [],
-            curroid: 0,
-            check: 0,
-            emp: 0
+        data() {
+          return {
+              counter: 0,
+              tot: 0,
+              currid: 0,
+              productsarray: [],
+              curroid: 0,
+              check: 0,
+              emp: 0
 
 
-        }
-      },
+          }
+        },
         computed: {
           products(){
-
-            return this.productsarray;
+            return this.$store.state.cartdata;
           },
 
           total: function(){
@@ -222,50 +221,26 @@
 
 
           addOrder(){
-            this.productsarray = [];
-            //contraversal just test network
+
+            this.productsarray = this.$store.state.cartdata;
+            this.$store.state.cartdata = [];
+
             this.$store.dispatch('loadOid');
             this.curroid  = this.$store.state.oid;
-            this.curroid += 1;
 
-            console.log(this.curroid)
-            axios.post('/storeorder',{ order_id: this.currid, user_id: this.$store.state.currentuserid , ostatus: 1}).then( function (response) {
-            //varible to check if this is true
+            axios.post('/storeorder',{ order_id: this.curroid,  user_id: this.$store.state.currentuserid , ostatus: 1}).then( function (response) {
                       console.log(response);
-                      this.$store.dispatch('loadOid');
-                      this.curroid  = this.$store.state.oid;
-                      console.log("track " + this.curroid);
-                      this.curroid += 1;
-
-                      this.check = 1;
-
-
-
-
             }).catch(function (error) {
                         console.log(error.response);
             });
-             //this.$store.state.cartdata = [];
-            //add if statement to check if varible is true
-            if( this.check = 1){ //check this if statement
 
-              //this.curroid += 1;
-              console.log("track " + this.curroid);
-              for (var i = 0; i < this.$store.state.cartdata.length; i++){ // the 2 must be the length of the filter product array
-                axios.post('/storeorder_product',{ o_id: this.curroid , p_id: this.$store.state.cartdata[i].id, quantity: this.$store.state.cartdata[i].quant}).then( function (response) {
-                //varible to check if this is true
-                          console.log(response);
-
-                }).catch(function (error) {
-                            console.log(error.response);
-                });
-              }
-
+            for (var i = 0; i < this.productsarray.length; i++){
+              axios.post('/storeorder_product',{ o_id: this.curroid , p_id: this.productsarray[i].id, quantity: this.productsarray[i].quant}).then( function (response) {
+                        console.log(response);
+              }).catch(function (error) {
+                          console.log(error.response);
+              });
             }
-
-
-            //console.log("end");
-
 
           },
 
@@ -310,7 +285,7 @@
           this.$store.dispatch('loadEo');
           this.$store.dispatch('loadPo');
           this.$store.dispatch('loadOid');
-        
+
 
 
 
