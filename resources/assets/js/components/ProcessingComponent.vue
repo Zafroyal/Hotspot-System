@@ -4,7 +4,7 @@
             <div class="col-md-12">
                 <div class="card card-default">
 
-                    <div class="card-header">Incoming Dashboard
+                    <div class="card-header">Processing Dashboard
 
                       <div class="btn-group-sm" role="group" aria-label="Basic example" style="float: right;">
                         <router-link class="btn btn-dark btn-sm" :to="{ name: 'employee' }">Incoming</router-link>
@@ -16,7 +16,7 @@
 
                     <div class="card-body" style="min-height: 300px;">
 
-                        <div class="card card-default" v-for="(order, index) in orders"  v-if="order.ostatus == 1">
+                        <div class="card card-default" v-for="(order, index) in orders"  v-if="order.ostatus == 2">
                             <div class="card-body">
                               <h2 style="padding:0px;">Order: {{index + 1}} </h2>
 
@@ -39,21 +39,21 @@
                                 </table>
 
 
+                                <button type="submit" style="float:right;" class="btn btn-danger"  v-on:click=" snackbar(), discard(order)">
+                                    discard
+                                </button>
 
-                              <button type="submit" style="float:right;" class="btn btn-danger"  v-on:click=" snackbar(), decline(order)">
-                                  Decline
+                              <button type="submit" style="float:right;" class="btn btn-primary"  v-on:click="snackbar(), update(order)">
+                                  Ready
                               </button>
 
-                              <button type="submit" style="float:right;" v-on:click="" class="btn btn-primary" v-on:click=" snackbar(), update(order)">
-                                  Accept
-                              </button>
                             </div>
 
                         </div>
                             <div id="snackbar">{{messager}}</div>
 
                                                           <div class="alert alert-danger" style="position:relative; bottom: 0; width: 95%;">
-                                                            <strong>Orders Incoming</strong> Be sure to accept or decline user orders as they come in</a>.
+                                                            <strong>Currently processing orders</strong> Be sure to click ready to notify user when order is complete</a>.
                                                           </div>
                     </div>
 
@@ -101,36 +101,34 @@
       },
       methods: {
 
+        update(o){
+          this.message = "Order ready";
+          axios.post('/update', {
+            order_id: o.order_id, ostatus: 3
+          }).then(response => {
+            console.log(response);
+          }).catch(error => {
+            console.log(error.response);
+          });
+        },
+
+        discard(o){
+          this.message = "Order discarded";
+          axios.post('/update', {
+            order_id: o.order_id, ostatus: 6
+          }).then(response => {
+            console.log(response);
+          }).catch(error => {
+            console.log(error.response);
+          });
+        },
+
         pollData () {
       		this.polling = setInterval(() => {
             this.$store.dispatch('loadPo');
             this.$store.dispatch('loadEo');
       		}, 10000)
       	},
-
-        update(o){
-          this.message="Order accepted"
-          axios.post('/update', {
-            order_id: o.order_id, ostatus: 2
-          }).then(response => {
-            console.log(response);
-          }).catch(error => {
-            console.log(error.response);
-          });
-        },
-
-        decline(o){
-            this.message="Order declined"
-          axios.post('/update', {
-            order_id: o.order_id, ostatus: 4
-          }).then(response => {
-            console.log(response);
-          }).catch(error => {
-            console.log(error.response);
-          });
-        },
-
-
 
 
 
@@ -146,7 +144,7 @@
           x.className = "show";
 
           // After 3 seconds, remove the show class from DIV
-          setTimeout(function(){ x.className = x.className.replace("show", "dffdf"); }, 1500);
+          setTimeout(function(){ x.className = x.className.replace("show", ""); }, 1500);
 
 
 

@@ -31,6 +31,10 @@ Route::get('/cart', 'CartController@cart')->middleware('auth');
 
 Route::get('/employee', 'EmployeeController@employee')->middleware('auth');
 
+Route::get('/processing', 'EmployeeController@employee')->middleware('auth');
+
+Route::get('/ready', 'EmployeeController@employee')->middleware('auth');
+
 Route::get('orders','OrdersController@orders')->middleware('auth');
 
 Route::get('/currentuserapi','OrdersController@index');
@@ -46,6 +50,8 @@ Route::get('/oid','OrdersController@oid');
 Route::post('send','EmployeeController@send');
 
 Route::post('reply','EmployeeController@reply');
+
+Route::post('update','OrdersController@update');
 
 Route::post('storeorder','OrdersController@store');
 

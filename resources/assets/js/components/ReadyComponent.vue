@@ -4,7 +4,7 @@
             <div class="col-md-12">
                 <div class="card card-default">
 
-                    <div class="card-header">Incoming Dashboard
+                    <div class="card-header">Ready Dashboard
 
                       <div class="btn-group-sm" role="group" aria-label="Basic example" style="float: right;">
                         <router-link class="btn btn-dark btn-sm" :to="{ name: 'employee' }">Incoming</router-link>
@@ -16,7 +16,7 @@
 
                     <div class="card-body" style="min-height: 300px;">
 
-                        <div class="card card-default" v-for="(order, index) in orders"  v-if="order.ostatus == 1">
+                        <div class="card card-default" v-for="(order, index) in orders"  v-if="order.ostatus == 3">
                             <div class="card-body">
                               <h2 style="padding:0px;">Order: {{index + 1}} </h2>
 
@@ -40,12 +40,12 @@
 
 
 
-                              <button type="submit" style="float:right;" class="btn btn-danger"  v-on:click=" snackbar(), decline(order)">
-                                  Decline
+                              <button type="submit" style="float:right;" class="btn btn-danger"  v-on:click="snackbar(), notCollected(order)">
+                                  Not Collected
                               </button>
 
-                              <button type="submit" style="float:right;" v-on:click="" class="btn btn-primary" v-on:click=" snackbar(), update(order)">
-                                  Accept
+                              <button type="submit" style="float:right;" v-on:click="" class="btn btn-primary" v-on:click="snackbar(), update(order)">
+                                  Collected
                               </button>
                             </div>
 
@@ -53,7 +53,7 @@
                             <div id="snackbar">{{messager}}</div>
 
                                                           <div class="alert alert-danger" style="position:relative; bottom: 0; width: 95%;">
-                                                            <strong>Orders Incoming</strong> Be sure to accept or decline user orders as they come in</a>.
+                                                            <strong>Orders that are ready</strong> Be sure to click collect or uncollected once customer has completed transaction</a>.
                                                           </div>
                     </div>
 
@@ -89,6 +89,9 @@
             return this.message;
           }
       },
+
+
+
       data() {
         return {
           Orders: [],
@@ -109,9 +112,9 @@
       	},
 
         update(o){
-          this.message="Order accepted"
+          this.message = "Order completed";
           axios.post('/update', {
-            order_id: o.order_id, ostatus: 2
+            order_id: o.order_id, ostatus: 7
           }).then(response => {
             console.log(response);
           }).catch(error => {
@@ -119,10 +122,10 @@
           });
         },
 
-        decline(o){
-            this.message="Order declined"
+        notCollected(o){
+          this.message = "Order uncollected";
           axios.post('/update', {
-            order_id: o.order_id, ostatus: 4
+            order_id: o.order_id, ostatus: 5
           }).then(response => {
             console.log(response);
           }).catch(error => {
@@ -130,11 +133,30 @@
           });
         },
 
+        deleteO(order){
+          this.$store.state.emporders.splice(this.$store.state.emporders.indexOf(order), 1);
+          this.message = "Order declined";
+        },
 
+        completed(order){
+          this.$store.state.emporders.splice(this.$store.state.emporders.indexOf(order), 1);
+          this.message = "Order completed";
+          axios.post('/collectapi', {user: order.user.name, email: order.user.email, number: this.orderNum}).then((response)=> console.log(response))
+          .catch((error) => console.log(error.response));
 
+        },
 
+        reply(order){
+          axios.post('/reply', {
+              usernames: order.user
+          }).then(response => {
 
+        //  console.log(response);
+          }).catch(error => {
+            console.log(error.response);
 
+          });
+        },
 
         snackbar: function() {
           // Get the snackbar DIV
@@ -146,7 +168,7 @@
           x.className = "show";
 
           // After 3 seconds, remove the show class from DIV
-          setTimeout(function(){ x.className = x.className.replace("show", "dffdf"); }, 1500);
+          setTimeout(function(){ x.className = x.className.replace("show", ""); }, 1500);
 
 
 

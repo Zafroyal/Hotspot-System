@@ -281,14 +281,11 @@
         },
 
         mounted(){
+          this.curroid  = this.$store.state.oid;
           this.$store.dispatch('loadUo');
           this.$store.dispatch('loadEo');
           this.$store.dispatch('loadPo');
           this.$store.dispatch('loadOid');
-
-
-
-
 
         },
 

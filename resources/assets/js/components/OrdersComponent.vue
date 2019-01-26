@@ -45,12 +45,26 @@
 
                       </div>
 
-                      <div class="alert alert-warning" style="position:relative; bottom: 0; width: 100%;">
+                      <div class="alert alert-danger" style="position:relative; bottom: 0; width: 100%;" v-if="products.length == 0">
                         <strong>Orders will reflect here.</strong> Feel free to place an order at any time.</a>.
                       </div>
 
-                      </div>
+                      <div v-for="(product, index) in products" >
 
+                        <div class="alert alert-danger" style="position:relative; bottom: 0; width: 100%;" v-if="product.ostatus == 1 && index == 1">
+                          <strong>Order has been placed.</strong> Please wait from approval and check email for update.</a>.
+                        </div>
+
+                        <div class="alert alert-warning" style="position:relative; bottom: 0; width: 100%;" v-if="product.ostatus == 2 && index == 1">
+                          <strong>Order has been accepted and is being prepared</strong> check email for update on completion</a>.
+                        </div>
+
+                        <div class="alert alert-success" style="position:relative; bottom: 0; width: 100%;" v-if="product.ostatus == 3 && index == 1">
+                          <strong>Order is ready</strong> Come collect in 30 minutes or your order will be replaced and account blocked</a>.
+                        </div>
+
+                        </div>
+                      </div>
 
                     </div>
                 </div>.
@@ -64,9 +78,11 @@
     export default {
       computed: {
         products(){
+          console.log(this.$store.state.userorder );
           return this.$store.state.userorder;
         },
         orders(){
+          //console.log(this.$store.state.orders);
           return this.$store.state.orders;
         },
 
@@ -112,6 +128,8 @@
             this.$store.dispatch('loadPo');
             this.$store.dispatch('loadEo');
             this.$store.dispatch('loadCid');
+              this.$store.dispatch('loadUo');
+            console.log("hks");
           }, 5000)
         }
       },

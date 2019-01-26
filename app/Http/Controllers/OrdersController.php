@@ -45,6 +45,17 @@ class OrdersController extends Controller
           //return (['message'] == 'Task was succesful');
       }
 
+
+      public function update(Request $request)
+      {
+
+          DB::statement("UPDATE `orders` SET `ostatus` = $request->ostatus WHERE `orders`.`order_id` = $request->order_id;");
+
+
+
+          //return (['message'] == 'Task was succesful');
+      }
+
       public function storeorder_product(Request $request)
       {
           Product_Orders::create($request->all());
